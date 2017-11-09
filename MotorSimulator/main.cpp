@@ -1,7 +1,9 @@
-#include <cstdio>
+#include "Model.h"
+#include "Controller.h"
 
 int main()
 {
-	printf("hello from MotorSimulator!\n");
-	return 0;
+	Controller controller = Controller();
+	return 0;	
 }
+	
