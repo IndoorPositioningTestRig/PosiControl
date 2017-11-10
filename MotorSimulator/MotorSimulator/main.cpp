@@ -3,6 +3,6 @@
 int main()
 {
 	Controller controller = Controller();
-	controller.set_probe_position(2, 3);
+	controller.set_probe_position(3, 4);
 	return 0;
 }
