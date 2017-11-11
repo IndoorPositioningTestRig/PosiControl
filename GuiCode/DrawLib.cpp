@@ -9,6 +9,7 @@ GtkWidget *darea;
 
 //vector with lines
 std::vector<dl_LineSettings> lines;
+vector<dl_Line2d> lines2D;
 
 //private functions:
 static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,  gpointer user_data);
@@ -19,7 +20,8 @@ static gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_
  * initial function to create a window
  * 
  * */
-void dl_CreateWindow(int width, int height){
+void dl_CreateWindow(int width, int height)
+{
     //save screensettings:
     screensettings.height = height; screensettings.width = width;
     //init gtk:
@@ -43,9 +45,15 @@ void dl_CreateWindow(int width, int height){
     gtk_main();
 }
 
-void dl_DrawLine(dl_LineSettings line){
+void dl_DrawLine(dl_LineSettings line)
+{
     lines.push_back(line);
     gtk_widget_queue_draw(darea);
+}
+
+void dl_DrawNewLine(dl_Point2d startPoint, dl_Point2d endPoint, dl_Color color, int thickness)
+{
+    
 }
 
 //implementation private functions

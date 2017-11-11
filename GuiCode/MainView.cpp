@@ -17,7 +17,6 @@ void GetDesktopResolution(int &width, int &height);
 //PUBLIC FUNCTIONS DECLERATIONS:
 void startGui()
 {
-	
 	screenWidth = screenHeight = 0;
 	GetDesktopResolution(screenWidth, screenHeight);
 	dl_CreateWindow(screenWidth, screenHeight);	
