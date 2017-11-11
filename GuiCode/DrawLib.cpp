@@ -10,11 +10,9 @@ GtkWidget *darea;
 //vector with lines
 std::vector<dl_LineSettings> lines;
 
-
 //private functions:
 static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,  gpointer user_data);
 static gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data);
-
 
 //implementation public functions:
 /**
@@ -46,7 +44,6 @@ void dl_CreateWindow(int width, int height){
 }
 
 void dl_DrawLine(dl_LineSettings line){
-    cout << "adding line" << line.startX << endl;
     lines.push_back(line);
     gtk_widget_queue_draw(darea);
 }
@@ -54,7 +51,6 @@ void dl_DrawLine(dl_LineSettings line){
 //implementation private functions
 static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,  gpointer user_data)
 {
-    cout << "drawing :) lines size: " <<  lines.size() << endl;
     //draw lines
     unsigned int i;
     for(i = 0; i < lines.size(); i++){
