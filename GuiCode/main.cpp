@@ -9,9 +9,6 @@ int main(int argc, char* argv[])
 	cout << "starting application" << endl;
 	cout << "starting gui thread" << endl;
 	thread guiThread(startGui);
-	
-	//draw cube in mainview.cpp
-	DrawDefaultCube();
 
 	// keep program running
 	while(1){

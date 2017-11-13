@@ -16,9 +16,5 @@ using namespace std;
  */
 void startGui();
 
-/*
- * Function to draw a default cube in the center gui
- */
-void DrawDefaultCube();
 
 #endif

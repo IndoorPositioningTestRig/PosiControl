@@ -1,6 +1,7 @@
 #pragma once
 #ifndef DRAWLIB_H
 #define DRAWLIB_H
+
 using namespace std;
 #include <gtk/gtk.h>
 #include <iostream>
@@ -19,11 +20,14 @@ struct dl_Line2d{
   dl_Point2d startPoint, endPoint;
   dl_Color color;
   double thickness;
+  int id;
 };
 
-struct dl_LineSettings{
+struct dl_Rectangle2d{
+  dl_Point2d startPoint, endPoint;
+  dl_Color color;
   double thickness;
-  int startX, startY, endX, endY, r,g,b;
+  int id;
 };
 
 struct dl_WindowSettings {
@@ -31,9 +35,16 @@ struct dl_WindowSettings {
     int height;
 };
 
+extern vector<dl_Line2d> dl_lines2D;
+extern vector<dl_Rectangle2d> dl_rectangles2D;
 
 void dl_CreateWindow(int width, int height);
-void dl_DrawLine(dl_LineSettings line);
-void dl_DrawNewLine(dl_Point2d startPoint, dl_Point2d endPoint, dl_Color color, int thickness);
+dl_Color dl_GetColor(int r, int g, int b);
+dl_Point2d dl_GetPoint(int x, int y);
+void dl_AddLine(dl_Line2d &line);
+void dl_AddRectangle(dl_Rectangle2d &rectangle);
+void dl_DrawNewLine(dl_Point2d &startPoint, dl_Point2d &endPoint, dl_Color &color, int thickness);
+void dl_RefreshScreen();
+void dl_ClearScreen();
 
 #endif

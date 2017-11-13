@@ -1,15 +1,15 @@
 #include "DrawLib.h"
 
+//public fields:
+vector<dl_Line2d> dl_lines2D;
+vector<dl_Rectangle2d> dl_rectangles2D;
+
 //private fields:
 //struct with window settings
 dl_WindowSettings screensettings;
 //drawable gtk widgets 
 GtkWidget *window;
 GtkWidget *darea;
-
-//vector with lines
-std::vector<dl_LineSettings> lines;
-vector<dl_Line2d> lines2D;
 
 //private functions:
 static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,  gpointer user_data);
@@ -45,15 +45,46 @@ void dl_CreateWindow(int width, int height)
     gtk_main();
 }
 
-void dl_DrawLine(dl_LineSettings line)
+dl_Color dl_GetColor(int r, int g, int b){
+    dl_Color color;
+    color.r = r; 
+    color.g = g;
+    color.b = b;
+    return color;
+}
+dl_Point2d dl_GetPoint(int x, int y){
+    dl_Point2d point;
+    point.x = x;
+    point.y = y;
+    return point;
+}
+
+void dl_AddLine(dl_Line2d &line){
+    dl_lines2D.push_back(line);
+}
+
+void dl_AddRectangle(dl_Rectangle2d &rect){
+    dl_rectangles2D.push_back(rect);
+}
+
+void dl_DrawNewLine(dl_Point2d &startPoint, dl_Point2d &endPoint, dl_Color &color, int thickness)
 {
-    lines.push_back(line);
+    dl_Line2d line; 
+    line.startPoint = startPoint;
+    line.endPoint =  endPoint;
+    line.color = color;
+    line.thickness = thickness;
+    dl_lines2D.push_back(line);
     gtk_widget_queue_draw(darea);
 }
 
-void dl_DrawNewLine(dl_Point2d startPoint, dl_Point2d endPoint, dl_Color color, int thickness)
-{
-    
+void dl_RefreshScreen(){
+    gtk_widget_queue_draw(darea);
+}
+
+void dl_ClearScreen(){
+    dl_lines2D.clear();
+    gtk_widget_queue_draw(darea);
 }
 
 //implementation private functions
@@ -61,18 +92,30 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,  gpointer user_dat
 {
     //draw lines
     unsigned int i;
-    for(i = 0; i < lines.size(); i++){
-        cairo_set_source_rgb(cr, lines[i].r, lines[i].g, lines[i].b);
-        cairo_set_line_width(cr, lines[i].thickness);
-        cairo_move_to(cr, lines[i].startX, lines[i].startY);
-        cairo_line_to(cr,lines[i].endX, lines[i].endY);
+    for(i = 0; i < dl_lines2D.size(); i++){
+        cairo_set_source_rgb(cr, dl_lines2D[i].color.r, dl_lines2D[i].color.g, dl_lines2D[i].color.b);
+        cairo_set_line_width(cr, dl_lines2D[i].thickness);
+        cairo_move_to(cr, dl_lines2D[i].startPoint.x, dl_lines2D[i].startPoint.y);
+        cairo_line_to(cr,dl_lines2D[i].endPoint.x, dl_lines2D[i].endPoint.y);
     }
+
+    //draw rectangles
+    for(i = 0; i < dl_rectangles2D.size(); i++){
+        cairo_set_source_rgb(cr, dl_rectangles2D[i].color.r, dl_rectangles2D[i].color.g, dl_rectangles2D[i].color.b);
+        cairo_set_line_width(cr, dl_rectangles2D[i].thickness);
+        cairo_move_to(cr, dl_rectangles2D[i].startPoint.x, dl_rectangles2D[i].startPoint.y);
+        cairo_line_to(cr,dl_rectangles2D[i].endPoint.x, dl_rectangles2D[i].startPoint.y);
+        cairo_line_to(cr,dl_rectangles2D[i].endPoint.x, dl_rectangles2D[i].endPoint.y);
+        cairo_line_to(cr,dl_rectangles2D[i].startPoint.x, dl_rectangles2D[i].endPoint.y);
+        cairo_line_to(cr,dl_rectangles2D[i].startPoint.x, dl_rectangles2D[i].startPoint.y);
+    }
+
     cairo_stroke(cr); 
     return FALSE;
 }
 
 static gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
 {
-    gtk_widget_queue_draw(widget);
+    //gtk_widget_queue_draw(widget);
     return TRUE;
 }
