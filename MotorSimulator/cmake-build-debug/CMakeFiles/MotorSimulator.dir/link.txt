@@ -1,0 +1,1 @@
+/usr/bin/c++.exe -g  -Wl,--enable-auto-import CMakeFiles/MotorSimulator.dir/main.cpp.o CMakeFiles/MotorSimulator.dir/Controller/controller.cpp.o CMakeFiles/MotorSimulator.dir/Model/model.cpp.o CMakeFiles/MotorSimulator.dir/Model/motor_module.cpp.o  -o MotorSimulator.exe -Wl,--out-implib,libMotorSimulator.dll.a -Wl,--major-image-version,0,--minor-image-version,0 
