@@ -1,7 +1,9 @@
 #pragma once
 
 #include <string>
-#include "../Model/model.h"
+#include <vector>
+
+#include "motor_module.h"
 
 class controller {
 public:
@@ -13,5 +15,5 @@ public:
     std::string get_desired_position();
 
 private:
-    model Model;
+    std::vector<motor_module> Motors;
 };

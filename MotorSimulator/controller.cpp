@@ -1,18 +1,19 @@
 #include <cmath>
 #include <string>
 #include <iostream>
+
 #include "controller.h"
 
 using namespace std;
 
 controller::controller() {
     cout << "----- Motor simulator -----" << endl;
-    this->Model = model();
+    std::vector<motor_module> Motors;
+    this->Motors.emplace_back(0, 0, this);
+    this->Motors.emplace_back(5, 0, this);
+    this->Motors.emplace_back(5, 5, this);
+    this->Motors.emplace_back(0, 5, this);
     set_desired_probe_position(3, 4);
-    cout << "get position" << endl;
-    cout << get_position() << endl;
-    cout << "get desired position" << endl;
-    cout << get_desired_position() << endl;
     /*
         de applicatie moet voor een coordinaat een desired length voor elke motor bepalen.
             1. Locatie wordt ingevoerd
@@ -24,16 +25,17 @@ controller::controller() {
 }
 
 void controller::set_desired_probe_position(double x, double y) {
-    for (motor_module &Motor : this->Model.Motors) {
+    for (motor_module &Motor : this->Motors) {
         motor_module *motor_module = &Motor;
-        motor_module->set_desired_length(sqrt(pow(motor_module->get_x() - x, 2) + pow(motor_module->get_y() - y, 2)));
+        motor_module->desired_length = sqrt(
+                pow(motor_module->position[0] - x, 2) + pow(motor_module->position[1] - y, 2));
     }
 }
 
 string controller::get_position() {
     string info;
-    for (motor_module &Motor : this->Model.Motors) {
-        info += to_string(Motor.get_current_length());
+    for (motor_module &Motor : this->Motors) {
+        info += to_string(Motor.current_length);
         info += '\n';
     }
     return info;
@@ -41,8 +43,8 @@ string controller::get_position() {
 
 string controller::get_desired_position() {
     string info;
-    for (motor_module &Motor : this->Model.Motors) {
-        info += to_string(Motor.get_desired_length());
+    for (motor_module &Motor : this->Motors) {
+        info += to_string(Motor.desired_length);
         info += '\n';
     }
     return info;

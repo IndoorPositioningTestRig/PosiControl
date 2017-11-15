@@ -3,5 +3,5 @@ project(MotorSimulator)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES main.cpp Controller/controller.cpp Controller/controller.h Model/model.cpp Model/model.h Model/motor_module.cpp Model/motor_module.h)
+set(SOURCE_FILES main.cpp controller.cpp controller.h motor_module.cpp motor_module.h communication_handler.cpp communication_handler.h motor_module_simulator.cpp motor_module_simulator.h)
 add_executable(MotorSimulator ${SOURCE_FILES})
