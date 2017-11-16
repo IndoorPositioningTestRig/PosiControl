@@ -11,9 +11,7 @@ public:
     ~motor_module_simulator();
 
     void runSim();
-
     void setDesiredLength(double);
-
     double getLength();
 
 private:

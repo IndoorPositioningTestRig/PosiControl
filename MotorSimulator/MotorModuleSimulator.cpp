@@ -1,7 +1,7 @@
 #include <thread>
 #include <iostream>
 #include <future>
-#include "motor_module_simulator.h"
+#include "MotorModuleSimulator.h"
 
 motor_module_simulator::~motor_module_simulator() {
     bool is = false;

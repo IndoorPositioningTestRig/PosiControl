@@ -1,7 +1,7 @@
 #pragma once
 
 #include "controller.h"
-#include "motor_module_simulator.h"
+#include "MotorModuleSimulator.h"
 
 class controller;
 
