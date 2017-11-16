@@ -9,6 +9,7 @@ using namespace std;
 #include <X11/Xlib.h>
 #include <unistd.h>
 #include "DrawLib.h" 
+#include <iostream>
 
 /*
  * Function to start gui method call this function in a thread, because this method never ends 
@@ -16,5 +17,5 @@ using namespace std;
  */
 void startGui();
 
-
+void plotPoint(vector<double> & motors);
 #endif

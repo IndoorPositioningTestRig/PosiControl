@@ -3,6 +3,7 @@
 //public fields:
 vector<dl_Line2d> dl_lines2D;
 vector<dl_Rectangle2d> dl_rectangles2D;
+vector<dl_Circle2d> dl_circles2D;
 
 //private fields:
 //struct with window settings
@@ -59,23 +60,27 @@ dl_Point2d dl_GetPoint(int x, int y){
     return point;
 }
 
-void dl_AddLine(dl_Line2d &line){
-    dl_lines2D.push_back(line);
+dl_Circle2d dl_GetCircle(int x, int y, int radius, dl_Color &color){
+    dl_Circle2d circle;
+    circle.point = dl_GetPoint(x,y);
+    circle.color = color;
+    circle.radius = radius;
+    return circle;
 }
 
-void dl_AddRectangle(dl_Rectangle2d &rect){
+int dl_AddLine(dl_Line2d &line){
+    dl_lines2D.push_back(line);
+    return dl_lines2D.size() -1;
+}
+
+int dl_AddRectangle(dl_Rectangle2d &rect){
     dl_rectangles2D.push_back(rect);
+    return dl_rectangles2D.size() -1;
 }
 
-void dl_DrawNewLine(dl_Point2d &startPoint, dl_Point2d &endPoint, dl_Color &color, int thickness)
-{
-    dl_Line2d line; 
-    line.startPoint = startPoint;
-    line.endPoint =  endPoint;
-    line.color = color;
-    line.thickness = thickness;
-    dl_lines2D.push_back(line);
-    gtk_widget_queue_draw(darea);
+int dl_AddCircle(dl_Circle2d &circle){
+    dl_circles2D.push_back(circle);
+    return dl_circles2D.size() -1;
 }
 
 void dl_RefreshScreen(){
@@ -88,6 +93,8 @@ void dl_ClearScreen(){
 }
 
 //implementation private functions
+
+
 static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,  gpointer user_data)
 {
     //draw lines
@@ -97,6 +104,7 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,  gpointer user_dat
         cairo_set_line_width(cr, dl_lines2D[i].thickness);
         cairo_move_to(cr, dl_lines2D[i].startPoint.x, dl_lines2D[i].startPoint.y);
         cairo_line_to(cr,dl_lines2D[i].endPoint.x, dl_lines2D[i].endPoint.y);
+        cairo_stroke(cr); 
     }
 
     //draw rectangles
@@ -108,9 +116,19 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,  gpointer user_dat
         cairo_line_to(cr,dl_rectangles2D[i].endPoint.x, dl_rectangles2D[i].endPoint.y);
         cairo_line_to(cr,dl_rectangles2D[i].startPoint.x, dl_rectangles2D[i].endPoint.y);
         cairo_line_to(cr,dl_rectangles2D[i].startPoint.x, dl_rectangles2D[i].startPoint.y);
+        cairo_stroke(cr); 
     }
 
-    cairo_stroke(cr); 
+    //draw circles 
+    int size = dl_circles2D.size();
+    //cout << "drawing cirlces: \n amount: " << size << endl;
+    for(i=0; i < dl_circles2D.size(); i++){
+        dl_Color c = dl_circles2D[i].color;
+        cairo_set_source_rgb(cr, c.r, c.g,c.b);
+        cairo_set_line_width(cr, 2);  
+        cairo_arc(cr, dl_circles2D[i].point.x, dl_circles2D[i].point.y, dl_circles2D[i].radius, 0, 2 * M_PI);
+        cairo_stroke(cr);
+    }
     return FALSE;
 }
 
