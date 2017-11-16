@@ -1,15 +1,23 @@
 #include "Controller.h"
 
 Controller::Controller() {
-    MotorModuleSimulator motorModuleSimulator1 = MotorModuleSimulator(1, 0, 0);
-    MotorModuleSimulator motorModuleSimulator2 = MotorModuleSimulator(2, 6, 0);
-    MotorModuleSimulator motorModuleSimulator3 = MotorModuleSimulator(3, 0, 8);
-    MotorModuleSimulator motorModuleSimulator4 = MotorModuleSimulator(4, 6, 8);
+    MotorModuleSimulator motorModuleSimulator1 = MotorModuleSimulator(1, 0, 0, 0);
+    MotorModuleSimulator motorModuleSimulator2 = MotorModuleSimulator(2, 6, 0, 0);
+    MotorModuleSimulator motorModuleSimulator3 = MotorModuleSimulator(3, 0, 8, 0);
+    MotorModuleSimulator motorModuleSimulator4 = MotorModuleSimulator(4, 6, 8, 0);
+    MotorModuleSimulator motorModuleSimulator5 = MotorModuleSimulator(5, 0, 0, 5);
+    MotorModuleSimulator motorModuleSimulator6 = MotorModuleSimulator(6, 6, 0, 5);
+    MotorModuleSimulator motorModuleSimulator7 = MotorModuleSimulator(7, 0, 8, 5);
+    MotorModuleSimulator motorModuleSimulator8 = MotorModuleSimulator(8, 6, 8, 5);
 
     motors.push_back(&motorModuleSimulator1);
     motors.push_back(&motorModuleSimulator2);
     motors.push_back(&motorModuleSimulator3);
     motors.push_back(&motorModuleSimulator4);
+    motors.push_back(&motorModuleSimulator5);
+    motors.push_back(&motorModuleSimulator6);
+    motors.push_back(&motorModuleSimulator7);
+    motors.push_back(&motorModuleSimulator8);
 
     std::string x;
     std::cout << "X: ";
@@ -19,8 +27,12 @@ Controller::Controller() {
     std::cout << "Y: ";
     getline(std::cin, y);
 
+    std::string z;
+    std::cout << "Z: ";
+    getline(std::cin, z);
 
-    setProbePosition(std::stod(x), std::stod(y));
+
+    setProbePosition(std::stod(x), std::stod(y), std::stod(z));
 
     while (true) {
         // Wait 100 milliseconds
@@ -46,10 +58,12 @@ Controller::Controller() {
     }
 }
 
-void Controller::setProbePosition(double x, double y) {
+void Controller::setProbePosition(double x, double y, double z) {
     probePosition[0] = x;
     probePosition[1] = y;
+    probePosition[2] = z;
     for (MotorModuleSimulator *motor: motors) {
-        motor->setDesiredLength(sqrt(pow(motor->getX() - x, 2) + pow(motor->getY() - y, 2)));
+        double length = sqrt(pow(motor->getX() - x, 2) + pow(motor->getY() - y, 2) + pow(motor->getZ() - z, 2));
+        motor->setDesiredLength(length);
     }
 }

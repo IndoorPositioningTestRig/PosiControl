@@ -5,7 +5,7 @@
 
 class MotorModuleSimulator {
 public:
-    MotorModuleSimulator(int, int, int);
+    MotorModuleSimulator(int, int, int, int);
 
 
     void setLength(double newLength) {
@@ -38,11 +38,15 @@ public:
         return position[1];
     }
 
+    int getZ() const {
+        return position[2];
+    }
+
 private:
     int id;
     double desiredLength;
     double length;
-    int position[2];
+    int position[3];
 
     void runSim();
 

@@ -11,9 +11,9 @@ class Controller {
 public:
     Controller();
 
-    void setProbePosition(double x, double y);
+    void setProbePosition(double, double, double);
 
 private:
-    double probePosition[2];
+    double probePosition[3];
     std::vector<MotorModuleSimulator *> motors;
 };
