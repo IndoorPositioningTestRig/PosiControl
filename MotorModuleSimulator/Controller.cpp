@@ -11,6 +11,16 @@ Controller::Controller() {
     motors.push_back(&motorModuleSimulator3);
     motors.push_back(&motorModuleSimulator4);
 
+    std::string x;
+    std::cout << "X: ";
+    std::cin.ignore();
+    getline(std::cin, x);
+
+    std::string y;
+    std::cout << "Y: ";
+    std::cin.ignore();
+    getline(std::cin, y);
+
     setProbePosition(3, 4);
 
     while (true) {
