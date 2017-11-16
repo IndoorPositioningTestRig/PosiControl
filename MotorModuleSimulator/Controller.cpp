@@ -2,9 +2,9 @@
 
 Controller::Controller() {
     MotorModuleSimulator motorModuleSimulator1 = MotorModuleSimulator(1, 0, 0);
-    MotorModuleSimulator motorModuleSimulator2 = MotorModuleSimulator(2, 5, 0);
-    MotorModuleSimulator motorModuleSimulator3 = MotorModuleSimulator(3, 0, 5);
-    MotorModuleSimulator motorModuleSimulator4 = MotorModuleSimulator(4, 5, 5);
+    MotorModuleSimulator motorModuleSimulator2 = MotorModuleSimulator(2, 6, 0);
+    MotorModuleSimulator motorModuleSimulator3 = MotorModuleSimulator(3, 0, 8);
+    MotorModuleSimulator motorModuleSimulator4 = MotorModuleSimulator(4, 6, 8);
 
     motors.push_back(&motorModuleSimulator1);
     motors.push_back(&motorModuleSimulator2);
@@ -13,15 +13,14 @@ Controller::Controller() {
 
     std::string x;
     std::cout << "X: ";
-    std::cin.ignore();
     getline(std::cin, x);
 
     std::string y;
     std::cout << "Y: ";
-    std::cin.ignore();
     getline(std::cin, y);
 
-    setProbePosition(3, 4);
+
+    setProbePosition(std::stod(x), std::stod(y));
 
     while (true) {
         // Wait 100 milliseconds
