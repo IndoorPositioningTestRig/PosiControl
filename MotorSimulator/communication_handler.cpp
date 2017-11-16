@@ -1,6 +1,7 @@
 #include "communication_handler.h"
 
-communication_handler::communication_handler(controller * c) {
+communication_handler::communication_handler(int id, controller *c) {
     this->Controller = c;
-    this->&motorModuleSimulator = motor_module_simulator(this);
+    motor_module_simulator module_simulator = motor_module_simulator(id, this);
+    this->moduleSimulator = &module_simulator;
 }

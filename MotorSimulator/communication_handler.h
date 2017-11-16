@@ -3,10 +3,15 @@
 #include "controller.h"
 #include "motor_module_simulator.h"
 
+class controller;
+
+class motor_module_simulator;
+
 class communication_handler {
 public:
-    communication_handler(controller *c);
+    communication_handler(int id, controller *c);
+
+    motor_module_simulator *moduleSimulator;
 private:
-    motor_module_simulator * motorModuleSimulator;
-    controller * Controller;
+    controller *Controller;
 };
