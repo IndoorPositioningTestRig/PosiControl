@@ -16,6 +16,7 @@ using namespace std;
  * Screen starts maximized
  */
 void startGui();
-
 void plotPoint(vector<double> & motors);
+void cleanScreen();
+void initScreen();
 #endif

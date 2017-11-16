@@ -17,12 +17,7 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,  gpointer user_dat
 static gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data);
 
 //implementation public functions:
-/**
- * initial function to create a window
- * 
- * */
-void dl_CreateWindow(int width, int height)
-{
+void dl_CreateWindow(int width, int height) {
     //save screensettings:
     screensettings.height = height; screensettings.width = width;
     //init gtk:
@@ -46,7 +41,7 @@ void dl_CreateWindow(int width, int height)
     gtk_main();
 }
 
-dl_Color dl_GetColor(int r, int g, int b){
+dl_Color dl_GetColor(double r, double g, double b){
     dl_Color color;
     color.r = r; 
     color.g = g;
@@ -60,11 +55,14 @@ dl_Point2d dl_GetPoint(int x, int y){
     return point;
 }
 
-dl_Circle2d dl_GetCircle(int x, int y, int radius, dl_Color &color){
+dl_Circle2d dl_GetCircle(int x, int y, int radius, double angle1, double angle2, dl_Color &color, bool drawCenterPoint){
     dl_Circle2d circle;
     circle.point = dl_GetPoint(x,y);
     circle.color = color;
     circle.radius = radius;
+    circle.angle1 = angle1;
+    circle.angle2 = angle2;
+    circle.drawCenterPoint = drawCenterPoint;
     return circle;
 }
 
@@ -89,14 +87,14 @@ void dl_RefreshScreen(){
 
 void dl_ClearScreen(){
     dl_lines2D.clear();
+    dl_rectangles2D.clear();
+    dl_circles2D.clear();
+
     gtk_widget_queue_draw(darea);
 }
 
 //implementation private functions
-
-
-static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,  gpointer user_data)
-{
+static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,  gpointer user_data){
     //draw lines
     unsigned int i;
     for(i = 0; i < dl_lines2D.size(); i++){
@@ -120,20 +118,27 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,  gpointer user_dat
     }
 
     //draw circles 
-    int size = dl_circles2D.size();
-    //cout << "drawing cirlces: \n amount: " << size << endl;
     for(i=0; i < dl_circles2D.size(); i++){
         dl_Color c = dl_circles2D[i].color;
         cairo_set_source_rgb(cr, c.r, c.g,c.b);
         cairo_set_line_width(cr, 2);  
-        cairo_arc(cr, dl_circles2D[i].point.x, dl_circles2D[i].point.y, dl_circles2D[i].radius, 0, 2 * M_PI);
+        cairo_arc(cr, 
+            dl_circles2D[i].point.x, dl_circles2D[i].point.y, 
+            dl_circles2D[i].radius,
+            dl_circles2D[i].angle1, dl_circles2D[i].angle2);
         cairo_stroke(cr);
+        if(dl_circles2D[i].drawCenterPoint){
+            cairo_set_source_rgba(cr, c.r, c.g,c.b,0.6);
+            cairo_arc (cr, 
+                dl_circles2D[i].point.x, dl_circles2D[i].point.y,  
+                10.0, 0, 2*M_PI);
+            cairo_fill (cr);
+        }
     }
     return FALSE;
 }
 
-static gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data)
-{
+static gboolean clicked(GtkWidget *widget, GdkEventButton *event, gpointer user_data){
     //gtk_widget_queue_draw(widget);
     return TRUE;
 }

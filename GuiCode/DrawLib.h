@@ -15,7 +15,7 @@ struct dl_Point2d{
   int x, y;
 };
 struct dl_Color{
-  int r,g,b;
+  double r,g,b;
 };
 
 struct dl_Line2d{
@@ -34,6 +34,8 @@ struct dl_Circle2d{
   dl_Point2d point;
   dl_Color color;
   int radius;
+  double angle1, angle2;
+  bool drawCenterPoint;
 };
 
 struct dl_WindowSettings {
@@ -47,9 +49,9 @@ extern vector<dl_Circle2d> dl_circles2D;
 
 void dl_CreateWindow(int width, int height);
 
-dl_Color dl_GetColor(int r, int g, int b);
+dl_Color dl_GetColor(double r, double g, double b);
 dl_Point2d dl_GetPoint(int x, int y);
-dl_Circle2d dl_GetCircle(int x, int y, int radius, dl_Color &color);
+dl_Circle2d dl_GetCircle(int x, int y, int radius, double angle1,double angle2, dl_Color &color, bool drawCenterPoint);
 
 int dl_AddLine(dl_Line2d &line);
 int dl_AddRectangle(dl_Rectangle2d &rectangle);
