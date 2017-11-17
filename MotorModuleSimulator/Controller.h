@@ -12,7 +12,7 @@ public:
     Controller();
 
     void setProbePosition(double, double, double);
-
+    void addMotorModule(int,int,int,int);
 private:
     double probePosition[3];
     std::vector<MotorModuleSimulator *> motors;
