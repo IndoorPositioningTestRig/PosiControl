@@ -4,6 +4,7 @@
 vector<dl_Line2d> dl_lines2D;
 vector<dl_Rectangle2d> dl_rectangles2D;
 vector<dl_Circle2d> dl_circles2D;
+vector<dl_Text2d> dl_texts2D;
 
 //private fields:
 //struct with window settings
@@ -66,6 +67,15 @@ dl_Circle2d dl_GetCircle(int x, int y, int radius, double angle1, double angle2,
     return circle;
 }
 
+dl_Text2d dl_GetText(int x, int y, double size, dl_Color & color, char text[63]){
+    dl_Text2d textObject;
+    textObject.point = {x,y};
+    textObject.color = color;
+    textObject.size = size;
+    strcpy(textObject.text, text);
+    return textObject;
+}
+
 int dl_AddLine(dl_Line2d &line){
     dl_lines2D.push_back(line);
     return dl_lines2D.size() -1;
@@ -89,6 +99,7 @@ void dl_ClearScreen(){
     dl_lines2D.clear();
     dl_rectangles2D.clear();
     dl_circles2D.clear();
+    dl_texts2D.clear();
 
     gtk_widget_queue_draw(darea);
 }
@@ -134,6 +145,20 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,  gpointer user_dat
                 10.0, 0, 2*M_PI);
             cairo_fill (cr);
         }
+    }
+
+    //draw text
+    for(i = 0; i < dl_texts2D.size(); i ++){
+        //cout << "writing: " << dl_texts2D[i].text << endl;
+        //cout << "x: " <<dl_texts2D[i].point.x << " y: " << dl_texts2D[i].point.x << endl;
+        double scale = dl_texts2D[i].size;
+        dl_Color c = dl_texts2D[i].color;
+        cairo_set_source_rgb(cr, c.r,c.g,c.b);
+        cairo_move_to(cr, dl_texts2D[i].point.x, dl_texts2D[i].point.y);
+        cairo_scale (cr, scale, scale);
+        cairo_show_text(cr,dl_texts2D[i].text);
+        cairo_scale (cr, 1/scale, 1/scale);
+        cairo_stroke(cr);
     }
     return FALSE;
 }

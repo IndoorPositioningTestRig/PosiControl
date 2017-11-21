@@ -11,6 +11,10 @@ using namespace std;
 #include "DrawLib.h" 
 #include <iostream>
 #include <math.h>
+#include <string>
+#include <stdio.h>
+#include <cstring>
+#include<sstream>
 
 struct Point3d{
 	double x,y,z;

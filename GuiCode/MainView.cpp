@@ -34,12 +34,15 @@ int screenWidth, screenHeight;
 
 //PRIVATE FUNCTIONS:
 //Function to get the screen resolution, sets given parameters 
-void GetDesktopResolution(int &width, int &height);
-void addDefaultCube();
+Point3d calculatePoint(vector<MotorData> & radians);
 void plotTopView(Point3d probePoint);
+void plotSideView(Point3d probepoint);
+void addDefaultCube();
 void initTopView();
 void initSideView();
-Point3d calculatePoint(vector<MotorData> & radians);
+void GetDesktopResolution(int &width, int &height);
+int getMotorIndex(Point3d point, vector<MotorData> & motors);
+void writeProbeInfo(vector<MotorData> & motors, Point3d probePoint);
 
 //PUBLIC FUNCTIONS 
 void startGui()
@@ -56,7 +59,10 @@ void plotPoint(vector<MotorData> & motors){
 	Point3d point = calculatePoint(motors);
 	initScreen();
 	plotTopView(point);
+	plotSideView(point);
+	writeProbeInfo(motors, point);
 	dl_RefreshScreen();
+
 }
 
 void cleanScreen(){
@@ -72,6 +78,31 @@ void initScreen(){
 }
 
 //PRIVATE functions
+Point3d calculatePoint(vector<MotorData> & motors){
+	MotorData centerMotor = motors[getMotorIndex({0,0,0}, motors)];
+	MotorData xMotor = motors[getMotorIndex({1,0,0}, motors)];
+	MotorData yMotor =motors[getMotorIndex({0,1,0}, motors)];
+	MotorData zMotor = motors[getMotorIndex({0,0,1}, motors)];
+	Point3d probePoint;
+	//calculate x:
+	int amountOfX = xMotor.motorPoint.x * -2;
+	double xValue = (xMotor.radian - centerMotor.radian) - pow(xMotor.motorPoint.x,2);
+	probePoint.x = xValue / amountOfX;
+
+	//calculate y:
+	int amountOfY = yMotor.motorPoint.y * -2;
+	double yValue = (yMotor.radian - centerMotor.radian) - pow(yMotor.motorPoint.y, 2);
+	probePoint.y = yValue / amountOfY;
+
+	//calculate z:
+	int amountOfz = zMotor.motorPoint.z * -2;
+	double zValue = (zMotor.radian - centerMotor.radian) - pow(zMotor.motorPoint.z, 2);
+	probePoint.z = zValue / amountOfz;
+	
+	//cout << "probepoint: x:" <<  probePoint.x << " y:" << probePoint.y << " z:" << probePoint.z << endl;
+	return probePoint;
+}
+
 void plotTopView(Point3d probePoint){
 	int cubeSize = 1;
 	vector<double> motorLengths;
@@ -105,6 +136,55 @@ void plotTopView(Point3d probePoint){
 	}	
 }
 
+void plotSideView(Point3d probePoint){
+	int cubeSize = 1;
+	vector<double> motorLengths;
+	motorLengths.push_back(sqrt(pow(cubeSize - probePoint.z,2)+ pow(probePoint.y,2)));						//Motor H
+	motorLengths.push_back(sqrt(pow(probePoint.z,2)+ pow(probePoint.y,2)));									//Motor D
+	motorLengths.push_back(sqrt(pow(probePoint.z,2)+ pow(cubeSize - probePoint.y,2)));						//Motor A
+	motorLengths.push_back(sqrt(pow(cubeSize -probePoint.z,2)+ pow(cubeSize -probePoint.y,2)));				//Motor E
+	int centerX = sideViewData.centerPoint.x;
+	int centerY = sideViewData.centerPoint.y;
+	int size = sideViewData.size;
+	int motorX[] = {centerX - size/2, centerX + size/2, centerX + size/2, centerX - size/2};
+	int motorY[] = {centerY + size/2, centerY + size/2, centerY - size/2, centerY - size/2};
+	
+	struct motorData{int x, y; double r;} motorArr[] = {
+		{centerX -size/2, centerY + size/2, motorLengths[0]}, 	//motor 0 (H)
+		{centerX +size/2, centerY + size/2, motorLengths[1]},	//motor 1 (D)
+		{centerX +size/2, centerY - size/2, motorLengths[2]},  	//motor 5 (A)
+		{centerX -size/2, centerY - size/2, motorLengths[3]},  	//motor 4 (E)
+	};
+
+	for(int i = 0; i < 4; i ++){
+		dl_Circle2d c  = dl_GetCircle(
+			motorArr[i].x, 
+			motorArr[i].y,
+			motorArr[i].r * size,
+			motorAngles[i].a1,
+			motorAngles[i].a2,
+			circleColors[i],
+			true);
+		dl_AddCircle(c);	
+	}	
+}
+
+void writeProbeInfo(vector<MotorData> & motors, Point3d probePoint){
+	
+	dl_Color color = {1,0,0};
+	dl_Text2d title = dl_GetText(50,50,3,color,"PosiControl Simulator");
+	dl_texts2D.push_back(title);
+	color = {0,0,0};
+	dl_Text2d info1 = dl_GetText(50,60,1,color,"XYZ Positie probe: ");
+	dl_texts2D.push_back(info1);
+	stringstream  strs;
+	strs << "x: " << probePoint.x << " y: " << probePoint.y << " z: " << probePoint.z;
+	std::string s = strs.str();
+	char* p = const_cast<char*>(s.c_str());
+	dl_Text2d info2 = dl_GetText(50,70,1,color,p);
+	dl_texts2D.push_back(info2);	
+}
+
 void addDefaultCube(){
 	centerCubeX = screenWidth  -200;
 	centerCubeY = screenHeight -200;	
@@ -127,6 +207,9 @@ void initTopView(){
 	dl_Rectangle2d rect = {startPoint,endPoint,color,3};
 	dl_AddRectangle(rect);
 	topViewData = {dl_GetPoint(x,y), size, color, rect};
+	dl_Text2d text = dl_GetText(x-size/2 +25, y-size/2 - 20,2, color, "Bovenaanzicht:");
+	text.point = {x-size/2 +25, y-size/2 - 20};
+	dl_texts2D.push_back(text);
 }
 
 void initSideView(){
@@ -138,7 +221,10 @@ void initSideView(){
 	dl_Color color = dl_GetColor(0,0,0);
 	dl_Rectangle2d rect = {startPoint,endPoint,color,3};
 	dl_AddRectangle(rect);
+	
 	sideViewData = {dl_GetPoint(x,y), size, color, rect};
+	dl_Text2d text = dl_GetText(x-size/2 +25, y-size/2 - 20,2, color, "Zijaanzicht:");
+	dl_texts2D.push_back(text);
 }
 
 void GetDesktopResolution(int &width, int &height){
@@ -161,30 +247,4 @@ int getMotorIndex(Point3d point, vector<MotorData> & motors){
 	}
 	cout <<"no motor found" << endl;
 	return -1;
-}
-
-
-Point3d calculatePoint(vector<MotorData> & motors){
-	MotorData centerMotor = motors[getMotorIndex({0,0,0}, motors)];
-	MotorData xMotor = motors[getMotorIndex({1,0,0}, motors)];
-	MotorData yMotor =motors[getMotorIndex({0,1,0}, motors)];
-	MotorData zMotor = motors[getMotorIndex({0,0,1}, motors)];
-	Point3d probePoint;
-	//calculate x:
-	int amountOfX = xMotor.motorPoint.x * -2;
-	double xValue = (xMotor.radian - centerMotor.radian) - pow(xMotor.motorPoint.x,2);
-	probePoint.x = xValue / amountOfX;
-
-	//calculate y:
-	int amountOfY = yMotor.motorPoint.y * -2;
-	double yValue = (yMotor.radian - centerMotor.radian) - pow(yMotor.motorPoint.y, 2);
-	probePoint.y = yValue / amountOfY;
-
-	//calculate z:
-	int amountOfz = zMotor.motorPoint.z * -2;
-	double zValue = (zMotor.radian - centerMotor.radian) - pow(zMotor.motorPoint.z, 2);
-	probePoint.z = zValue / amountOfz;
-	
-	cout << "probepoint: x:" <<  probePoint.x << " y:" << probePoint.y << " z:" << probePoint.z << endl;
-	return probePoint;
 }

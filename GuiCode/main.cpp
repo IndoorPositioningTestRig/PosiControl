@@ -25,19 +25,6 @@ int main(int argc, char* argv[])
 		{ 1,0,1 }, //motor G
 		{ 0,0,1 }  //motor H
 	};
-		
-	// double lengths2[] = {1.131,0.825,0,0,0.825,0.283,0,0};
-
-	// double lengths[] = {0.866,0.866,0.866,0.866,0.866,0.866,0.866,0.866};
-	
-	// vector<MotorData> motorsData;
-	// for(int i = 0; i < 8; i ++){
-	// 	motorsData.push_back({lengths[i], motorPoints[i]});
-	// }
-
-
-
-	
 
 	// keep program running
 	while(1){
@@ -46,20 +33,19 @@ int main(int argc, char* argv[])
 		double lengths[] = {0.866,0.866,0.866,0.866,0.866,0.866,0.866,0.866};
 		
 		vector<MotorData> motorsData;
-		for(int i = 0; i < 8; i ++){
+		for(int i = 0; i < 8; i ++)
 			motorsData.push_back({lengths[i], motorPoints[i]});
-		}
+		
 		plotPoint(motorsData);
 
-		usleep( 1000 * 1000);
+		usleep( 2000 * 1000);
 		
 		motorsData.clear();
-		for(int i = 0; i < 8; i ++){
+		for(int i = 0; i < 8; i ++)
 			motorsData.push_back({lengths2[i], motorPoints[i]});
-		}
+		
 		plotPoint(motorsData);
-		usleep(1000 * 1000);
-
+		usleep(2000 * 1000);
 	}
 	return 0;
 }
