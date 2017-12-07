@@ -11,18 +11,14 @@ MotorModuleSimulator::MotorModuleSimulator(int id, int x, int y, int z) {
 
 void MotorModuleSimulator::runSim() {
     while (true) {
-        if (length == desiredLength) {
+        if (desiredLength - 0.01 < length && length < desiredLength + 0.01) {
             std::cout << "Motor " << getId() << ": done" << std::endl;
             break;
-        }
-        if (length > desiredLength) {
+        } else if (length > desiredLength + 0.01) {
             setLength(length - 0.0001);
-        } else if (length < desiredLength) {
+        } else if (length < desiredLength - 0.01) {
             setLength(length + 0.0001);
-        }else{
-            this->simulator->join();
         }
-
         std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     }
 }

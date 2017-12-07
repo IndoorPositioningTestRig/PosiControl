@@ -40,6 +40,7 @@ public:
     int getZ() const {
         return position[2];
     }
+    std::thread* simulator;
 
 private:
     int id = -1;
@@ -48,6 +49,5 @@ private:
     int position[3] = {0,0,0};
 
     void runSim();
-    std::thread* simulator;
 
 };

@@ -39,17 +39,24 @@ Controller::Controller() {
                       " - Length: " << motor->getLength() <<
                       " - Desired: " << motor->getDesiredLength()
                       << std::endl;
+            if (motor->getDesiredLength() - 0.01 < motor->getLength() && motor->getLength() < motor->getDesiredLength() + 0.01) {
+                if (motor->simulator->joinable()) {
+                    motor->simulator->join();
+                }
+            }
         }
         std::cout << std::endl;
 
         // Check if finished
         bool done = true;
         for (MotorModuleSimulator *motor: motors) {
-            if (motor->getLength() != motor->getDesiredLength())
+            if (motor->getDesiredLength() - 0.01 > motor->getLength() || motor->getLength() > motor->getDesiredLength() + 0.01)
                 done = false;
         }
         if (done)break;
     }
+    std::string a;
+    getline(std::cin, a);
 }
 
 void Controller::setProbePosition(double x, double y, double z) {
