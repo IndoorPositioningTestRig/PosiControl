@@ -23,6 +23,7 @@ Controller::Controller() {
         cout << "Commands:" << endl;
         cout << "1: Set length" << endl;
         cout << "2: Go" << endl;
+        cout << "3: Status" << endl;
         cout << "0: quit" << endl;
         getline(cin, command);
         switch (stoi(command)) {
@@ -71,6 +72,15 @@ Controller::Controller() {
                             done = false;
                     }
                     if (done)break;
+                }
+                break;
+            case 3:
+                    cout << "----------Status---------" << endl;
+                for (MotorModuleSimulator *motor: motors) {
+                    cout << "Motor module: " << motor->getId() << endl;
+                    cout << "X: " << motor->getX()<< " - Y: " << motor->getY() << " - Z: " << motor->getZ() << endl;
+                    cout << "Desired length: " << motor->getDesiredLength() << " - Length: " << motor->getLength() << endl;
+                    cout << "-------------------------" << endl;
                 }
                 break;
             case 0:
