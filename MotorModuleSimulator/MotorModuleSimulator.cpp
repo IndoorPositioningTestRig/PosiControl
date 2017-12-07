@@ -15,9 +15,9 @@ void MotorModuleSimulator::runSim() {
             std::cout << "Motor " << getId() << ": done" << std::endl;
             break;
         } else if (length > desiredLength + 0.01) {
-            setLength(length - 0.0001);
+            setLength(length - 0.001);
         } else if (length < desiredLength - 0.01) {
-            setLength(length + 0.0001);
+            setLength(length + 0.001);
         }
         std::this_thread::sleep_for(std::chrono::nanoseconds(1));
     }

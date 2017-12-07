@@ -17,6 +17,9 @@ public:
 
     void setDesiredLength(double Length) {
         desiredLength = Length;
+    }
+
+    void go(){
         this->simulator = new std::thread(&MotorModuleSimulator::runSim, this);
         this->simulator->detach();
     }

@@ -1,19 +1,8 @@
 #include "Controller.h"
 
+using namespace std;
 
 Controller::Controller() {
-    // request x, y, z coordinates
-    std::string x;
-    std::cout << "X: ";
-    getline(std::cin, x);
-
-    std::string y;
-    std::cout << "Y: ";
-    getline(std::cin, y);
-
-    std::string z;
-    std::cout << "Z: ";
-    getline(std::cin, z);
 
     // Create motor modules
     addMotorModule(1, 0, 0, 0);
@@ -25,35 +14,74 @@ Controller::Controller() {
     addMotorModule(7, 0, 8, 5);
     addMotorModule(8, 6, 8, 5);
 
-    // Move the probe
-    setProbePosition(std::stod(x), std::stod(y), std::stod(z));
+    std::string command = "";
+    std::string x;
+    std::string y;
+    std::string z;
+    bool isRunning = true;
+    while (isRunning) {
+        cout << "Commands:" << endl;
+        cout << "1: Set length" << endl;
+        cout << "2: Go" << endl;
+        cout << "0: quit" << endl;
+        getline(cin, command);
+        switch (stoi(command)) {
+            case 1:
+                // request x, y, z coordinates
+                std::cout << "X: ";
+                getline(std::cin, x);
 
-    while (true) {
-        // Wait 100 milliseconds
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                std::cout << "Y: ";
+                getline(std::cin, y);
 
-        // Print status
-        for (MotorModuleSimulator *motor: motors) {
-            std::cout <<
-                      " ID: " << motor->getId() <<
-                      " - Length: " << motor->getLength() <<
-                      " - Desired: " << motor->getDesiredLength()
-                      << std::endl;
-            if (motor->getDesiredLength() - 0.01 < motor->getLength() && motor->getLength() < motor->getDesiredLength() + 0.01) {
-                if (motor->simulator->joinable()) {
-                    motor->simulator->join();
+                std::cout << "Z: ";
+                getline(std::cin, z);
+
+                setProbePosition(std::stod(x), std::stod(y), std::stod(z));
+                break;
+            case 2:
+                for (MotorModuleSimulator *motor: motors) {
+                    motor->go();
                 }
-            }
-        }
-        std::cout << std::endl;
+                while (true) {
+                    // Wait 100 milliseconds
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-        // Check if finished
-        bool done = true;
-        for (MotorModuleSimulator *motor: motors) {
-            if (motor->getDesiredLength() - 0.01 > motor->getLength() || motor->getLength() > motor->getDesiredLength() + 0.01)
-                done = false;
+                    // Print status
+                    for (MotorModuleSimulator *motor: motors) {
+                        std::cout <<
+                                  " ID: " << motor->getId() <<
+                                  " - Length: " << motor->getLength() <<
+                                  " - Desired: " << motor->getDesiredLength()
+                                  << std::endl;
+                        if (motor->getDesiredLength() - 0.01 < motor->getLength() &&
+                            motor->getLength() < motor->getDesiredLength() + 0.01) {
+                            if (motor->simulator->joinable()) {
+                                motor->simulator->join();
+                            }
+                        }
+                    }
+                    std::cout << std::endl;
+
+                    // Check if finished
+                    bool done = true;
+                    for (MotorModuleSimulator *motor: motors) {
+                        if (motor->getDesiredLength() - 0.01 > motor->getLength() ||
+                            motor->getLength() > motor->getDesiredLength() + 0.01)
+                            done = false;
+                    }
+                    if (done)break;
+                }
+                break;
+            case 0:
+                cout << "Bye" << endl;
+                isRunning = false;
+                break;
+            default:
+                cout << "unknown command" << endl;
+                command = "";
+                break;
         }
-        if (done)break;
     }
     std::string a;
     getline(std::cin, a);
