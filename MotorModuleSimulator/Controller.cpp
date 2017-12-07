@@ -6,13 +6,13 @@ Controller::Controller() {
 
     // Create motor modules
     addMotorModule(1, 0, 0, 0);
-    addMotorModule(2, 6, 0, 0);
-    addMotorModule(3, 0, 8, 0);
-    addMotorModule(4, 6, 8, 0);
-    addMotorModule(5, 0, 0, 5);
-    addMotorModule(6, 6, 0, 5);
-    addMotorModule(7, 0, 8, 5);
-    addMotorModule(8, 6, 8, 5);
+    addMotorModule(2, 2000, 0, 0);
+    addMotorModule(3, 0, 2000, 0);
+    addMotorModule(4, 2000, 2000, 0);
+    addMotorModule(5, 0, 0, 2000);
+    addMotorModule(6, 2000, 0, 2000);
+    addMotorModule(7, 0, 2000, 2000);
+    addMotorModule(8, 2000, 2000, 2000);
 
     std::string command = "";
     std::string x;
@@ -42,7 +42,7 @@ Controller::Controller() {
                 break;
             case 2:
                 for (MotorModuleSimulator *motor: motors) {
-                    motor->go();
+                    motor->commandGo();
                 }
                 while (true) {
                     // Wait 100 milliseconds
@@ -55,8 +55,8 @@ Controller::Controller() {
                                   " - Length: " << motor->getLength() <<
                                   " - Desired: " << motor->getDesiredLength()
                                   << std::endl;
-                        if (motor->getDesiredLength() - 0.01 < motor->getLength() &&
-                            motor->getLength() < motor->getDesiredLength() + 0.01) {
+                        if (motor->getDesiredLength() - 1 < motor->getLength() &&
+                            motor->getLength() < motor->getDesiredLength() + 1) {
                             if (motor->simulator->joinable()) {
                                 motor->simulator->join();
                             }
@@ -67,19 +67,21 @@ Controller::Controller() {
                     // Check if finished
                     bool done = true;
                     for (MotorModuleSimulator *motor: motors) {
-                        if (motor->getDesiredLength() - 0.01 > motor->getLength() ||
-                            motor->getLength() > motor->getDesiredLength() + 0.01)
+                        if (motor->getDesiredLength() - 1 > motor->getLength() ||
+                            motor->getLength() > motor->getDesiredLength() + 1)
                             done = false;
                     }
                     if (done)break;
                 }
                 break;
             case 3:
-                    cout << "----------Status---------" << endl;
+                cout << "----------Status---------" << endl;
                 for (MotorModuleSimulator *motor: motors) {
                     cout << "Motor module: " << motor->getId() << endl;
-                    cout << "X: " << motor->getX()<< " - Y: " << motor->getY() << " - Z: " << motor->getZ() << endl;
-                    cout << "Desired length: " << motor->getDesiredLength() << " - Length: " << motor->getLength() << endl;
+                    cout << "X: " << motor->getX() << " - Y: " << motor->getY() << " - Z: " << motor->getZ() << endl;
+                    cout << "Desired length: " << motor->getDesiredLength() << " - Length: " << motor->getLength()
+                         << endl;
+                    cout << "Speed: " << motor->getSpeed() << endl;
                     cout << "-------------------------" << endl;
                 }
                 break;
@@ -105,9 +107,11 @@ void Controller::setProbePosition(double x, double y, double z) {
         double a = pow(motor->getX() - x, 2);
         double b = pow(motor->getY() - y, 2);
         double c = pow(motor->getZ() - z, 2);
+        int length = int(sqrt(a + b + c));
 
-        double length = sqrt(a + b + c);
-        motor->setDesiredLength(length);
+        int time = 10; // 10 seconds to move to the position
+        int speed = length / time;
+        motor->commandSetLength(length, speed);
     }
 }
 

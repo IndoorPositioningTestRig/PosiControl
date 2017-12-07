@@ -7,24 +7,29 @@ class MotorModuleSimulator {
 public:
     MotorModuleSimulator(int, int, int, int);
 
-    void setLength(double newLength) {
-        this->length = newLength;
-    }
-
-    double getLength() const {
+    int getLength() const {
         return length;
     }
 
-    void setDesiredLength(double Length) {
-        desiredLength = Length;
+    void setLength(int currentLength) {
+        this->length = currentLength;
     }
 
-    void go(){
+/*
+ * Length in mm
+ * Speed in mm/s
+ * */
+    void commandSetLength(int Length, int Speed) {
+        this->desiredLength = Length;
+        this->speed = Speed;
+    }
+
+    void commandGo() {
         this->simulator = new std::thread(&MotorModuleSimulator::runSim, this);
         this->simulator->detach();
     }
 
-    double getDesiredLength() const {
+    int getDesiredLength() const {
         return desiredLength;
     }
 
@@ -43,13 +48,19 @@ public:
     int getZ() const {
         return position[2];
     }
-    std::thread* simulator;
+
+    int getSpeed() const {
+        return speed;
+    }
+
+    std::thread *simulator;
 
 private:
     int id = -1;
-    double desiredLength = 0;
-    double length = 0;
-    int position[3] = {0,0,0};
+    int desiredLength = 0;
+    int length = 0;
+    int speed = 0;
+    int position[3] = {0, 0, 0};
 
     void runSim();
 
