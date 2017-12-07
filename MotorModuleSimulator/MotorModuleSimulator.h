@@ -7,7 +7,6 @@ class MotorModuleSimulator {
 public:
     MotorModuleSimulator(int, int, int, int);
 
-
     void setLength(double newLength) {
         this->length = newLength;
     }
@@ -18,8 +17,8 @@ public:
 
     void setDesiredLength(double Length) {
         desiredLength = Length;
-        std::thread thread(&MotorModuleSimulator::runSim, this);
-        thread.detach();
+        this->simulator = new std::thread(&MotorModuleSimulator::runSim, this);
+        this->simulator->detach();
     }
 
     double getDesiredLength() const {
@@ -43,11 +42,12 @@ public:
     }
 
 private:
-    int id;
-    double desiredLength;
-    double length;
-    int position[3];
+    int id = -1;
+    double desiredLength = 0;
+    double length = 0;
+    int position[3] = {0,0,0};
 
     void runSim();
+    std::thread* simulator;
 
 };
