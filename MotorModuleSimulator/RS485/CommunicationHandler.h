@@ -6,8 +6,8 @@
 
 class CommunicationHandler {
 public:
-    CommunicationHandler() {
-        arduino = new SerialPort("\\\\.\\COM15");
+    CommunicationHandler(char * serialPort) {
+        arduino = new SerialPort(serialPort);
         if (arduino->isConnected())
             std::cout << "Connection Established" << std::endl;
         else
@@ -16,7 +16,7 @@ public:
 
     void setLength(int mid, int length, int speed) {
         if (arduino->isConnected()) {
-            std::string command = "";
+            std::string command;
             command.append("1|");
             command.append(std::to_string(mid));
             command.append("|");
