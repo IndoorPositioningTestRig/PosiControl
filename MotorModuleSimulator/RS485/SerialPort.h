@@ -5,8 +5,8 @@
 #define MAX_DATA_LENGTH 255
 
 #include <windows.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 
 class SerialPort {
 private:

@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <iostream>
 #include <thread>
 #include "SerialPort.h"

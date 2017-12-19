@@ -1,6 +1,6 @@
 #include "Controller.h"
-#include "SerialPort.h"
-#include "CommunicationHandler.h"
+#include "RS485/SerialPort.h"
+#include "RS485/CommunicationHandler.h"
 
 using namespace std;
 
@@ -13,7 +13,7 @@ int main() {
 //    Controller controller;
 
     CommunicationHandler communicationHandler;
-//    communicationHandler.executeMove();
+    communicationHandler.executeMove();
     communicationHandler.setLength(1, 100, 100);
     return 0;
 }
