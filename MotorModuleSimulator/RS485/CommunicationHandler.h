@@ -2,7 +2,9 @@
 
 #include <iostream>
 #include <thread>
+#include <vector>
 #include "SerialPort.h"
+#include "../MotorModule.h"
 
 using namespace std;
 
@@ -12,7 +14,7 @@ public:
 
     void setLength(int mid, int length, int speed);
 
-    void executeMove();
+    void executeMove( vector<MotorModule *> motors);
 
 private:
     SerialPort *arduino;

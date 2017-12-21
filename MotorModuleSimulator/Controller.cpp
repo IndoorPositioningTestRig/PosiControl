@@ -2,7 +2,10 @@
 
 using namespace std;
 
-Controller::Controller() {
+
+Controller::Controller(char *port_name) {
+
+    rs485 = new CommunicationHandler(port_name);
 
     // Create motor modules
     addMotorModule(1, 0, 0, 0);
@@ -13,6 +16,7 @@ Controller::Controller() {
     addMotorModule(6, 2000, 0, 2000);
     addMotorModule(7, 0, 2000, 2000);
     addMotorModule(8, 2000, 2000, 2000);
+
 
     std::string command = "";
     std::string x;
@@ -39,44 +43,17 @@ Controller::Controller() {
                 getline(std::cin, z);
 
                 setProbePosition(std::stod(x), std::stod(y), std::stod(z));
+                for (MotorModule *motor: motors) {
+                    rs485->setLength(motor->getId(), motor->getLength(), motor->getSpeed());
+                }
                 break;
             case 2:
-                for (MotorModuleSimulator *motor: motors) {
-                    motor->commandGo();
-                }
-                while (true) {
-                    // Wait 100 milliseconds
-                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-                    // Print status
-                    for (MotorModuleSimulator *motor: motors) {
-                        std::cout <<
-                                  " ID: " << motor->getId() <<
-                                  " - Length: " << motor->getLength() <<
-                                  " - Desired: " << motor->getDesiredLength()
-                                  << std::endl;
-                        if (motor->getDesiredLength() - 1 < motor->getLength() &&
-                            motor->getLength() < motor->getDesiredLength() + 1) {
-                            if (motor->simulator->joinable()) {
-                                motor->simulator->join();
-                            }
-                        }
-                    }
-                    std::cout << std::endl;
-
-                    // Check if finished
-                    bool done = true;
-                    for (MotorModuleSimulator *motor: motors) {
-                        if (motor->getDesiredLength() - 1 > motor->getLength() ||
-                            motor->getLength() > motor->getDesiredLength() + 1)
-                            done = false;
-                    }
-                    if (done)break;
-                }
+                // send go
+                rs485->executeMove(motors);
                 break;
             case 3:
                 cout << "----------Status---------" << endl;
-                for (MotorModuleSimulator *motor: motors) {
+                for (MotorModule *motor: motors) {
                     cout << "Motor module: " << motor->getId() << endl;
                     cout << "X: " << motor->getX() << " - Y: " << motor->getY() << " - Z: " << motor->getZ() << endl;
                     cout << "Desired length: " << motor->getDesiredLength() << " - Length: " << motor->getLength()
@@ -103,7 +80,7 @@ void Controller::setProbePosition(double x, double y, double z) {
     probePosition[0] = x;
     probePosition[1] = y;
     probePosition[2] = z;
-    for (MotorModuleSimulator *motor: motors) {
+    for (MotorModule *motor: motors) {
         double a = pow(motor->getX() - x, 2);
         double b = pow(motor->getY() - y, 2);
         double c = pow(motor->getZ() - z, 2);
@@ -116,5 +93,5 @@ void Controller::setProbePosition(double x, double y, double z) {
 }
 
 void Controller::addMotorModule(int id, int x, int y, int z) {
-    motors.push_back(new MotorModuleSimulator(id, x, y, z));
+    motors.push_back(new MotorModule(id, x, y, z));
 }

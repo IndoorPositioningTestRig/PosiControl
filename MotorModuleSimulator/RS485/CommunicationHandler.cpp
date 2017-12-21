@@ -14,17 +14,14 @@ CommunicationHandler::CommunicationHandler(char *serialPort) {
 
 void CommunicationHandler::setLength(int mid, int length, int speed) {
     if (arduino->isConnected()) {
-        // Create command
-        char *cCommand = createCommand1(to_string(mid), to_string(length), to_string(speed));
 
-        // Send command and delete the command
+        // Create set length command and publish it on the bus
+        char *cCommand = createCommand1(to_string(mid), to_string(length), to_string(speed));
         arduino->writeSerialPort(cCommand, strlen(cCommand));
         delete[] cCommand;
 
-        // Create expected response
+        // Wait for Done
         string response = createCommand4(to_string(mid));
-
-        // Wait for response
         bool isWaiting = true;
         string message;
         while (isWaiting) {
@@ -42,12 +39,21 @@ void CommunicationHandler::setLength(int mid, int length, int speed) {
                 }
             }
         }
+
+        // Send Acknowledge to the correct module
         char *cCommand3 = createCommand3(to_string(mid));
         arduino->writeSerialPort(cCommand3, strlen(cCommand3));
     }
 }
 
-void CommunicationHandler::executeMove() {
+void CommunicationHandler::executeMove(vector<MotorModule *> motors) {
+
+    // create checklist
+    bool list[motors.size()];
+    for (int i = 0; i < motors.size(); ++i) {
+        list[i] = false;
+    }
+
     if (arduino->isConnected()) {
         // Create command
         char *cCommand = "2|0#";
@@ -56,9 +62,32 @@ void CommunicationHandler::executeMove() {
         arduino->writeSerialPort(cCommand, strlen(cCommand));
 
         // Wait for responses from all modules
+        bool isWaiting = true;
+        string message;
+        while (isWaiting) {
+            char *incomingData = new char[4];
+            int read_result = arduino->readSerialPort(incomingData, MAX_DATA_LENGTH);
+            if (read_result > 0) {
+                message.append(incomingData);
+                cout << "Received message: " << message << endl;
+                if (message.find('#') != string::npos) {
+                    string mid = message.substr(message.find('|') + 1, message.find('|') + 2);
+                    list[stoi(mid) - 1] = true;
 
-        // Send acknowledge
-
+                    // Send Acknowledge to the correct module
+                    char *cCommand3 = createCommand3(mid);
+                    arduino->writeSerialPort(cCommand3, strlen(cCommand3));
+                    message.clear();
+                    bool hasFalse = true;
+                    for (int i = 0; i < motors.size(); ++i) {
+                        if (!list[i])
+                            hasFalse = false;
+                    }
+                    if (hasFalse)
+                        isWaiting = false;
+                }
+            }
+        }
     }
 }
 
