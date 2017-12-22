@@ -9,13 +9,13 @@ Controller::Controller(char *port_name) {
 
     // Create motor modules
     addMotorModule(1, 0, 0, 0);
-    addMotorModule(2, 2000, 0, 0);
-    addMotorModule(3, 0, 2000, 0);
-    addMotorModule(4, 2000, 2000, 0);
-    addMotorModule(5, 0, 0, 2000);
-    addMotorModule(6, 2000, 0, 2000);
-    addMotorModule(7, 0, 2000, 2000);
-    addMotorModule(8, 2000, 2000, 2000);
+//    addMotorModule(2, 2000, 0, 0);
+//    addMotorModule(3, 0, 2000, 0);
+//    addMotorModule(4, 2000, 2000, 0);
+//    addMotorModule(5, 0, 0, 2000);
+//    addMotorModule(6, 2000, 0, 2000);
+//    addMotorModule(7, 0, 2000, 2000);
+//    addMotorModule(8, 2000, 2000, 2000);
 
 
     std::string command = "";
@@ -44,7 +44,7 @@ Controller::Controller(char *port_name) {
 
                 setProbePosition(std::stod(x), std::stod(y), std::stod(z));
                 for (MotorModule *motor: motors) {
-                    rs485->setLength(motor->getId(), motor->getLength(), motor->getSpeed());
+                    rs485->setLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
                 }
                 break;
             case 2:
@@ -85,7 +85,6 @@ void Controller::setProbePosition(double x, double y, double z) {
         double b = pow(motor->getY() - y, 2);
         double c = pow(motor->getZ() - z, 2);
         int length = int(sqrt(a + b + c));
-
         int time = 10; // 10 seconds to move to the position
         int speed = length / time;
         motor->commandSetLength(length, speed);

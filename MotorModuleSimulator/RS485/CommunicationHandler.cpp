@@ -1,7 +1,3 @@
-//
-// Created by mauro on 15-12-2017.
-//
-
 #include "CommunicationHandler.h"
 
 CommunicationHandler::CommunicationHandler(char *serialPort) {
@@ -71,7 +67,8 @@ void CommunicationHandler::executeMove(vector<MotorModule *> motors) {
                 message.append(incomingData);
                 cout << "Received message: " << message << endl;
                 if (message.find('#') != string::npos) {
-                    string mid = message.substr(message.find('|') + 1, message.find('|') + 2);
+                    unsigned long position = message.find('|');
+                    string mid = message.substr(position + 1, position + 2);
                     list[stoi(mid) - 1] = true;
 
                     // Send Acknowledge to the correct module
