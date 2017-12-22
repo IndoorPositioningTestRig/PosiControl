@@ -52,7 +52,7 @@ void CommunicationHandler::executeMove(vector<MotorModule *> motors) {
 
     if (arduino->isConnected()) {
         // Create command
-        char *cCommand = "2|0#";
+        char *cCommand = "*2|0#";
 
         // Send command
         arduino->writeSerialPort(cCommand, strlen(cCommand));
@@ -90,6 +90,7 @@ void CommunicationHandler::executeMove(vector<MotorModule *> motors) {
 
 char *CommunicationHandler::createCommand1(const string &MID, const string &Length, const string &Speed) {
     string command;
+    command.append("*");
     command.append("1|");
     command.append(MID);
     command.append("|");
@@ -104,6 +105,7 @@ char *CommunicationHandler::createCommand1(const string &MID, const string &Leng
 
 char *CommunicationHandler::createCommand3(const string &MID) {
     string command;
+    command.append("*");
     command.append("3|");
     command.append(MID);
     command.append("#");
@@ -113,9 +115,10 @@ char *CommunicationHandler::createCommand3(const string &MID) {
 }
 
 string CommunicationHandler::createCommand4(const string &MID) {
-    string response;
-    response.append("4|");
-    response.append(MID);
-    response.append("#");
-    return response;
+    string command;
+    command.append("*");
+    command.append("4|");
+    command.append(MID);
+    command.append("#");
+    return command;
 }

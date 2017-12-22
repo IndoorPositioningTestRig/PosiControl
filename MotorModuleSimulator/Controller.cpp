@@ -9,7 +9,7 @@ Controller::Controller(char *port_name) {
 
     // Create motor modules
     addMotorModule(1, 0, 0, 0);
-//    addMotorModule(2, 2000, 0, 0);
+    addMotorModule(2, 2000, 0, 0);
 //    addMotorModule(3, 0, 2000, 0);
 //    addMotorModule(4, 2000, 2000, 0);
 //    addMotorModule(5, 0, 0, 2000);
