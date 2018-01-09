@@ -85,6 +85,9 @@ void CommunicationHandler::executeMove(vector<MotorModule *> motors) {
                 }
             }
         }
+        for (int i = 0; i < motors.size(); ++i) {
+            motors[i]->setLength(motors[i]->getDesiredLength());
+        }
     }
 }
 
