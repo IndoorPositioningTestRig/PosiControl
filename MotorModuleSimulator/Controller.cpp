@@ -10,6 +10,9 @@ Controller::Controller(char *port_name) {
     // Create motor modules
     addMotorModule(1, 0, 0, 0);
     addMotorModule(2, 2000, 0, 0);
+    for (int i = 0; i < motors.size(); ++i) {
+        motors[i]->setLength(1414);
+    }
 //    addMotorModule(3, 0, 2000, 0);
 //    addMotorModule(4, 2000, 2000, 0);
 //    addMotorModule(5, 0, 0, 2000);
@@ -30,46 +33,52 @@ Controller::Controller(char *port_name) {
         cout << "3: Status" << endl;
         cout << "0: quit" << endl;
         getline(cin, command);
-        switch (stoi(command)) {
-            case 1:
-                // request x, y, z coordinates
-                std::cout << "X: ";
-                getline(std::cin, x);
+        if (command != "") {
+            switch (stoi(command)) {
+                case 1:
+                    // request x, y, z coordinates
+                    std::cout << "X: ";
+                    getline(std::cin, x);
 
-                std::cout << "Y: ";
-                getline(std::cin, y);
+                    std::cout << "Y: ";
+                    getline(std::cin, y);
 
-                std::cout << "Z: ";
-                getline(std::cin, z);
+                    std::cout << "Z: ";
+                    getline(std::cin, z);
 
-                setProbePosition(std::stod(x), std::stod(y), std::stod(z));
-                for (MotorModule *motor: motors) {
-                    rs485->setLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
-                }
-                break;
-            case 2:
-                // send go
-                rs485->executeMove(motors);
-                break;
-            case 3:
-                cout << "----------Status---------" << endl;
-                for (MotorModule *motor: motors) {
-                    cout << "Motor module: " << motor->getId() << endl;
-                    cout << "X: " << motor->getX() << " - Y: " << motor->getY() << " - Z: " << motor->getZ() << endl;
-                    cout << "Desired length: " << motor->getDesiredLength() << " - Length: " << motor->getLength()
-                         << endl;
-                    cout << "Speed: " << motor->getSpeed() << endl;
-                    cout << "-------------------------" << endl;
-                }
-                break;
-            case 0:
-                cout << "Bye" << endl;
-                isRunning = false;
-                break;
-            default:
-                cout << "unknown command" << endl;
-                command = "";
-                break;
+                    setProbePosition(std::stod(x), std::stod(y), std::stod(z));
+                    for (MotorModule *motor: motors) {
+                        rs485->setLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
+                    }
+                    cout << "Length set" << endl;
+                    break;
+                case 2:
+                    // send go
+                    rs485->executeMove(motors);
+                    cout << "executing move" << endl;
+                    break;
+                case 3:
+                    cout << "----------Status---------" << endl;
+                    for (MotorModule *motor: motors) {
+                        cout << "Motor module: " << motor->getId() << endl;
+                        cout << "X: " << motor->getX() << " - Y: " << motor->getY() << " - Z: " << motor->getZ()
+                             << endl;
+                        cout << "Desired length: " << motor->getDesiredLength() << " - Length: " << motor->getLength()
+                             << endl;
+                        cout << "Speed: " << motor->getSpeed() << endl;
+                        cout << "-------------------------" << endl;
+                    }
+                    break;
+                case 0:
+                    cout << "Bye" << endl;
+                    isRunning = false;
+                    break;
+                default:
+                    cout << "unknown command" << endl;
+                    command = "";
+                    break;
+            }
+            command = "";
         }
     }
     std::string a;
@@ -84,10 +93,10 @@ void Controller::setProbePosition(double x, double y, double z) {
         double a = pow(motor->getX() - x, 2);
         double b = pow(motor->getY() - y, 2);
         double c = pow(motor->getZ() - z, 2);
-        int length = int(sqrt(a + b + c));
+        int desiredLength = int(sqrt(a + b + c));
         int time = 10; // 10 seconds to move to the position
-        int speed = length / time;
-        motor->commandSetLength(length, speed);
+        int speed = abs((motor->getLength() - desiredLength) / time);
+        motor->commandSetLength(desiredLength, speed);
     }
 }
 
