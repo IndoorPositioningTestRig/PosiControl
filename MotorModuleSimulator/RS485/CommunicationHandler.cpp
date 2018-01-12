@@ -91,6 +91,36 @@ void CommunicationHandler::executeMove(vector<MotorModule *> motors) {
     }
 }
 
+
+int CommunicationHandler::getEncoderPos(int mid){
+    cout << "sending to: " << mid << endl;
+    char* command = createCommand6(to_string(mid));
+    arduino->writeSerialPort(command,strlen(command));
+    delete[] command;
+    string response;
+    bool isWaiting = true;
+    while(isWaiting){
+        char *incomingData = new char[11]{
+        int read_result = arduino->readSerialPort(incomingData,MAX_DATA_LENGTH);
+        if(read_result > 0)
+            response.append(incomingData);
+            cout << "Received message: " << response << endl;
+            if(response.find('#') != string::npos){
+                string msg = response.substr(0, response.find('#') + 1);
+                isWaiting = false;
+            }
+        }
+    }
+    unsigned first = response.find('|',2);
+    unsigned last = response.find('#');
+    int length = stoi(response.substr(first,last));
+    cout << "got length: " << length << endl;
+
+
+
+    return length;
+}
+
 char *CommunicationHandler::createCommand1(const string &MID, const string &Length, const string &Speed) {
     string command;
     command.append("*");
@@ -125,3 +155,14 @@ string CommunicationHandler::createCommand4(const string &MID) {
     command.append("#");
     return command;
 }
+
+char *CommunicationHandler::createCommand6(const string &MID){
+    string command;
+    command.append("*6|");
+    command.append(MID);
+    command.append("#");
+    char *cCommand = new char[command.length() + 1];
+    strcpy(cCommand, command.c_str());
+    return cCommand;
+}
+

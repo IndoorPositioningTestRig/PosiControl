@@ -15,6 +15,7 @@ public:
     void setLength(int mid, int length, int speed);
 
     void executeMove( vector<MotorModule *> motors);
+    int getEncoderPos(int mid);
 
 private:
     SerialPort *arduino;
@@ -23,5 +24,7 @@ private:
 
     char *createCommand3(const string &mid);
 
+
     std::string createCommand4(const string &mid);
+    char * createCommand6(const string &mid);
 };

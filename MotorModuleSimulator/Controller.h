@@ -15,6 +15,7 @@ public:
     void setProbePosition(double, double, double);
     void addMotorModule(int,int,int,int);
 private:
+    void setCustomMotorLength();
     double probePosition[3];
     std::vector<MotorModule *> motors;
     CommunicationHandler * rs485;
