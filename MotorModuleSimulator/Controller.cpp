@@ -18,7 +18,7 @@ Controller::Controller(char *port_name) {
 //    addMotorModule(8, 2000, 2000, 2000);
 
     for (auto &motor : motors) {
-        motor->setLength(1593);
+        motor->setLength(1683);
     }
 
     std::string command;
