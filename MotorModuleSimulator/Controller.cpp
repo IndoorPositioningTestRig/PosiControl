@@ -18,9 +18,14 @@ Controller::Controller(char *port_name) {
 //    addMotorModule(8, 2000, 2000, 2000);
 
     for (auto &motor : motors) {
-        motor->setLength(1593);
+        motor->setLength(1683);
     }
-
+    int figure[4][3] = {
+            {920, 920,  1150},
+            {920, 1150, 1150},
+            {920, 1150, 920},
+            {920, 920,  920}
+    };;
     std::string command;
     std::string x;
     std::string y;
@@ -32,6 +37,7 @@ Controller::Controller(char *port_name) {
         cout << "2: Go" << endl;
         cout << "3: Status" << endl;
         cout << "4: Set motor length" << endl;
+        cout << "5: execute square" << endl;
         cout << "0: quit" << endl;
         getline(cin, command);
         if (!command.empty()) {
@@ -73,6 +79,19 @@ Controller::Controller(char *port_name) {
                 case 4:
                     cout << "----------Custom Motor Length---------" << endl;
                     setCustomMotorLength();
+                    break;
+                case 5:
+                    // execute square
+                    cout << "Enter loop" << endl;
+                    for (auto &i : figure) {
+                        cout << "setting probe position" << endl;
+                        setProbePosition(i[0], i[1], i[2]);
+                        for (MotorModule *motor: motors) {
+                            rs485->setLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
+                        }
+                        cout << "executing move" << endl;
+                        rs485->executeMove(motors);
+                    }
                     break;
                 case 0:
                     cout << "Bye" << endl;
