@@ -8,20 +8,20 @@ Controller::Controller(char *port_name) {
     rs485 = new CommunicationHandler(port_name);
 
     // Create motor modules
-    addMotorModule(1, 0, 0, 0);
-    addMotorModule(2, 2000, 0, 0);
-    for (int i = 0; i < motors.size(); ++i) {
-        motors[i]->setLength(1414);
-    }
-//    addMotorModule(3, 0, 2000, 0);
-//    addMotorModule(4, 2000, 2000, 0);
+    addMotorModule(1, 0, 0, 1840);
+    addMotorModule(2, 1840, 0, 1840);
+    addMotorModule(3, 1840, 1840, 1840);
+    addMotorModule(4, 0, 1840, 1840);
 //    addMotorModule(5, 0, 0, 2000);
 //    addMotorModule(6, 2000, 0, 2000);
 //    addMotorModule(7, 0, 2000, 2000);
 //    addMotorModule(8, 2000, 2000, 2000);
 
+    for (auto &motor : motors) {
+        motor->setLength(1593);
+    }
 
-    std::string command = "";
+    std::string command;
     std::string x;
     std::string y;
     std::string z;
@@ -33,7 +33,7 @@ Controller::Controller(char *port_name) {
         cout << "3: Status" << endl;
         cout << "0: quit" << endl;
         getline(cin, command);
-        if (command != "") {
+        if (!command.empty()) {
             switch (stoi(command)) {
                 case 1:
                     // request x, y, z coordinates
@@ -93,8 +93,8 @@ void Controller::setProbePosition(double x, double y, double z) {
         double a = pow(motor->getX() - x, 2);
         double b = pow(motor->getY() - y, 2);
         double c = pow(motor->getZ() - z, 2);
-        int desiredLength = int(sqrt(a + b + c));
-        int time = 10; // 10 seconds to move to the position
+        auto desiredLength = int(sqrt(a + b + c));
+        int time = 3; // 10 seconds to move to the position
         int speed = abs((motor->getLength() - desiredLength) / time);
         motor->commandSetLength(desiredLength, speed);
     }

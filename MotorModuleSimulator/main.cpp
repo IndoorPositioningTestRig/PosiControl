@@ -2,9 +2,10 @@
 
 using namespace std;
 
-char *port_name = "\\\\.\\COM16";
+char *port_name = "\\\\.\\COM19";
 
 int main() {
-    Controller controller(port_name);
+    Controller * controller = new Controller(port_name);
+    delete controller;
     return 0;
 }
