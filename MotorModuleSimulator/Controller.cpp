@@ -179,7 +179,5 @@ void Controller::setCustomMotorLength(){
     cout << "done, press enter to move" << endl;
     cout << "moving motors.." << endl;
     rs485->executeMove(motors);
-
-
-
+    cout << "done" << endl;
 }
