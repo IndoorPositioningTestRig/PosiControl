@@ -96,29 +96,25 @@ int CommunicationHandler::getEncoderPos(int mid) {
     sendCommand(createCommand6(to_string(mid)));
 
     // wait for response
-    string response;
+    string response = "";
     bool isWaiting = true;
     while (isWaiting) {
-        auto *incomingData = new char[50];
+        auto *incomingData = new char[10];
         int read_result = arduino->readSerialPort(incomingData, MAX_DATA_LENGTH);
         if (read_result > 0) {
             response.append(incomingData);
             cout << "Received message: " << response << endl;
             if (response.find('#') != string::npos) {
-                string msg = response.substr(0, response.find('#') + 1);
                 isWaiting = false;
             }
         }
     }
-
-    int first = response.find('|', 4) + 1;
-    int last = response.find('#');
-    string position = response.substr(first, last - first);
-    int length = stoi(position);
-    return length;
+    string position = response.substr(response.find('|', 4) + 1, response.find('#'));
+    response.clear();
+    return stoi(position);
 }
 
-void CommunicationHandler::setEncoderPos(int mid, int pos){
+void CommunicationHandler::setEncoderPos(int mid, int pos) {
     sendCommand(createCommand6(to_string(mid)));
 }
 
