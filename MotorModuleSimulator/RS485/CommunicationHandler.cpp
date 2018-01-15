@@ -63,8 +63,6 @@ void CommunicationHandler::executeMove(vector<MotorModule *> motors, int mid) {
     }
 }
 
-
-
 int CommunicationHandler::getLength(int mid) {
     if (arduino->isConnected()) {
         // send command
