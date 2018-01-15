@@ -19,7 +19,7 @@ public:
     void executeMove(vector<MotorModule *> motors);
 
     int getEncoderPos(int mid);
-    void setEncoderPos(int mid, int pos);
+
 private:
     SerialPort *arduino;
 
@@ -33,6 +33,7 @@ private:
 
     string createCommand4(const string &mid);
 
-    char * createCommand7(const string &mid, const string & pos);
     string createCommand6(const string &mid);
+
+    string createCommand7(const string &mid, const string &pos);
 };
