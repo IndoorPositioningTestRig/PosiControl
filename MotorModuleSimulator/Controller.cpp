@@ -132,51 +132,54 @@ void Controller::addMotorModule(int id, int x, int y, int z) {
     motors.push_back(new MotorModule(id, x, y, z));
 }
 
-void Controller::setCustomMotorLength(){
+void Controller::setCustomMotorLength() {
     cout << "Select motor(s) finish with enter or 0" << endl;
-    for(int i = 0; i < motors.size(); i++){
-        cout << "motor: " << motors[i]->getId() << endl;
+    for (auto &motor : motors) {
+        cout << "motor: " << motor->getId() << endl;
     }
+
     bool done = false;
     vector<int> motorIds;
-    while(!done){
+    while (!done) {
         string s;
         getline(cin, s);
-        if(s.length() < 1){
+        if (s.length() < 1) {
             done = true;
             break;
         }
         int mId = stoi(s);
-        if(mId != 0){
+        if (mId != 0) {
             motorIds.push_back(mId);
-        }else{
+        } else {
             done = true;
         }
     }
 
     vector<int> encoderPositions;
-    for(int mId : motorIds){
+    for (int mId : motorIds) {
         int length = rs485->getEncoderPos(mId);
         encoderPositions.push_back(length);
     }
 
     cout << "selected motors:" << endl;
-    for(int i = 0; i < motorIds.size(); i++){
-        cout << "motor: " << motorIds[i] << " motorLength: " << encoderPositions[i]<< endl;
+    for (int i = 0; i < motorIds.size(); i++) {
+        cout << "motor: " << motorIds[i] << " motorLength: " << encoderPositions[i] << endl;
     }
+
     vector<int> newPositions;
-    cout << "set desired position"<< endl;
-    for(int i = 0; i < motorIds.size(); i++){
-        cout << "motor: " << motorIds[i];
+    cout << "set desired position: " << endl;
+    for (int motorId : motorIds) {
+        cout << "motor " << motorId << " : ";
         string newPosString;
         getline(cin, newPosString);
         newPositions.push_back(stoi(newPosString));
     }
-    cout << "done" <<  "sending data to modules.." << endl;
-    for(int i = 0; i < motorIds.size(); i ++){
-        rs485->setLength(motorIds[i],newPositions[i], 30);
+    cout << "Done setting positions." << endl;
+    cout << "sending data to modules.." << endl;
+    for (int i = 0; i < motorIds.size(); i++) {
+        rs485->setLength(motorIds[i], newPositions[i], 30);
     }
-    cout << "done, press enter to move" << endl;
+
     cout << "moving motors.." << endl;
     rs485->executeMove(motors);
     cout << "done" << endl;
