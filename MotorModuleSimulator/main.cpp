@@ -2,7 +2,7 @@
 
 using namespace std;
 
-char *port_name = "\\\\.\\COM12";
+char *port_name = "\\\\.\\COM19";
 
 int main() {
     auto * controller = new Controller(port_name);

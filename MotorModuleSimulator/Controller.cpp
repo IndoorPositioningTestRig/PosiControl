@@ -9,9 +9,9 @@ Controller::Controller(char *port_name) {
 
     // Create motor modules
     addMotorModule(1, 0, 0, 1840);
-    addMotorModule(2, 1840, 0, 1840);
-    addMotorModule(3, 1840, 1840, 1840);
-    addMotorModule(4, 0, 1840, 1840);
+//    addMotorModule(2, 1840, 0, 1840);
+//    addMotorModule(3, 1840, 1840, 1840);
+//    addMotorModule(4, 0, 1840, 1840);
 
     for (auto &motor : motors) {
         motor->setLength(1683);
@@ -52,7 +52,7 @@ Controller::Controller(char *port_name) {
 
                     setProbePosition(std::stod(x), std::stod(y), std::stod(z));
                     for (MotorModule *motor: motors) {
-                        rs485->setLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
+                        rs485->setDesiredLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
                     }
                     cout << "Length set" << endl;
                     break;
@@ -84,14 +84,14 @@ Controller::Controller(char *port_name) {
                         cout << "setting probe position" << endl;
                         setProbePosition(i[0], i[1], i[2]);
                         for (MotorModule *motor: motors) {
-                            rs485->setLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
+                            rs485->setDesiredLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
                         }
                         cout << "executing move" << endl;
                         rs485->executeMove(motors);
                     }
                     break;
                 case 6:
-                    cout <<"Calibrating.." << endl;
+                    cout << "Calibrating.." << endl;
                     calibrateProbe();
                     break;
                 case 0:
@@ -162,7 +162,7 @@ void Controller::setCustomMotorLength() {
 
     vector<int> encoderPositions;
     for (int mId : motorIds) {
-        int length = rs485->getEncoderPos(mId);
+        int length = rs485->getLength(mId);
         encoderPositions.push_back(length);
     }
 
@@ -182,28 +182,30 @@ void Controller::setCustomMotorLength() {
     cout << "Done setting positions." << endl;
     cout << "sending data to modules.." << endl;
     for (int i = 0; i < motorIds.size(); i++) {
-        rs485->setLength(motorIds[i], newPositions[i], 30);
+        rs485->setDesiredLength(motorIds[i], newPositions[i], 30);
     }
 
     cout << "moving motors.." << endl;
-    rs485->executeMove(motors);
+    for (int i = 0; i < motorIds.size(); i++) {
+        rs485->executeMove(motors, motorIds[i]);
+    }
     cout << "done" << endl;
 }
 
-void Controller::calibrateProbe(){
-    cout <<"place the probe on a known position, press enter to continue" << endl;
+void Controller::calibrateProbe() {
+    cout << "place the probe on a known position, press enter to continue" << endl;
     string input;
-    getline(cin, input );
-    for(auto & m : motors){
-        int length = rs485->getEncoderPos(m->getId());
+    getline(cin, input);
+    for (auto &m : motors) {
+        int length = rs485->getLength(m->getId());
         m->setEncoderPos(length);
     }
     cout << "current motor lengths" << endl;
-    for(auto & m: motors){
+    for (auto &m: motors) {
         cout << "motor " << m->getId() << " length: " << m->getEncoderPos() << endl;
     }
     cout << "set new motor lengths: " << endl;
-    for(auto & m: motors){
+    for (auto &m: motors) {
         cout << "motor " << m->getId() << endl;
         string lengthString;
         getline(cin, lengthString);
@@ -211,8 +213,8 @@ void Controller::calibrateProbe(){
         m->setEncoderPos(encoderLength);
     }
     cout << "program setting correct motor length.. " << endl;
-    for(auto &m : motors){
-        rs485->setEncoderPos(m->getId(), m->getEncoderPos());
+    for (auto &m : motors) {
+        rs485->setLength(m->getId(), m->getEncoderPos());
     }
     cout << "done" << endl;
 }

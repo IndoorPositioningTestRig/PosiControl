@@ -7,4 +7,5 @@ MotorModule::MotorModule(int id, int x, int y, int z) {
     this->position[0] = x;
     this->position[1] = y;
     this->position[2] = z;
+    this->isMoving = false;
 }

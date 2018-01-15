@@ -14,12 +14,15 @@ public:
 
     ~CommunicationHandler();
 
-    void setLength(int mid, int length, int speed);
+    void setDesiredLength(int mid, int length, int speed);
 
     void executeMove(vector<MotorModule *> motors);
 
-    int getEncoderPos(int mid);
-    void setEncoderPos(int mid, int position);
+    void executeMove(vector<MotorModule *> motors, int mid);
+
+    int getLength(int mid);
+
+    void setLength(int mid, int position);
 
 private:
     SerialPort *arduino;
@@ -28,11 +31,7 @@ private:
 
     string createCommand1(const string &mid, const string &length, const string &speed);
 
-    string createCommand2();
-
-    string createCommand3(const string &mid);
-
-    string createCommand4(const string &mid);
+    string createCommand2(const string &mid);
 
     string createCommand6(const string &mid);
 

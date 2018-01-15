@@ -18,6 +18,10 @@ public:
         this->speed = speed;
     }
 
+    void setEncoderPos(int position) {
+        this->encoderPos = position;
+    }
+
     int getDesiredLength() const {
         return desiredLength;
     }
@@ -50,9 +54,7 @@ public:
         return encoderPos;
     }
 
-    void setEncoderPos(int position) {
-        this->encoderPos = position;
-    }
+    bool isMoving;
 
 private:
     int encoderPos;

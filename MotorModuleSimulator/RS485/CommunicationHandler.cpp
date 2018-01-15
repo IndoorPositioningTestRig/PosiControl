@@ -1,4 +1,5 @@
 #include <cstring>
+#include <unistd.h>
 #include "CommunicationHandler.h"
 
 CommunicationHandler::CommunicationHandler(char *serialPort) {
@@ -13,109 +14,88 @@ CommunicationHandler::~CommunicationHandler() {
     delete arduino;
 }
 
-void CommunicationHandler::setLength(int mid, int length, int speed) {
-    if (arduino->isConnected()) {
-
-        // Create set length command and publish it on the bus
+void CommunicationHandler::setDesiredLength(int mid, int length, int speed) {
+    if (arduino->isConnected())
         sendCommand(createCommand1(to_string(mid), to_string(length), to_string(speed)));
-
-        // Wait for Done
-        string response = createCommand4(to_string(mid));
-        bool isWaiting = true;
-        string message;
-        while (isWaiting) {
-            auto *incomingData = new char[4];
-            int read_result = arduino->readSerialPort(incomingData, MAX_DATA_LENGTH);
-            if (read_result > 0) {
-                message.append(incomingData);
-                cout << "Received message: " << message << endl;
-                if (message.find('#') != string::npos) {
-                    string msg = message.substr(0, message.find('#') + 1);
-                    int compare = msg.compare(response);
-                    if (compare == 0)
-                        isWaiting = false;
-                    message.clear();
-                }
-            }
-        }
-
-        // Send Acknowledge to the correct module
-        sendCommand(createCommand3(to_string(mid)));
-    }
 }
 
 void CommunicationHandler::executeMove(vector<MotorModule *> motors) {
-
-    // create checklist
-    bool list[motors.size()];
-    for (int i = 0; i < motors.size(); ++i) {
-        list[i] = false;
-    }
-
     if (arduino->isConnected()) {
-        // Send command
-        sendCommand(createCommand2());
+        // create checklist
+        for (auto &motor : motors) {
+            motor->isMoving = true;
+        }
 
-        // Wait for responses from all modules
+        // Send command
+        sendCommand(createCommand2("0"));
+
+        // Sleep for 1 second
+        usleep(1000000);
+
+        // Check lengths of all modules
+        for (auto &motor : motors) {
+            motor->setLength(getLength(motor->getId()));
+            motor->isMoving = false;
+        }
+    }
+}
+
+void CommunicationHandler::executeMove(vector<MotorModule *> motors, int mid) {
+    if (arduino->isConnected()) {
+        for (auto &motor : motors) {
+            if (motor->getId() == mid)
+                motor->isMoving = true;
+        }
+
+        // Send command
+        sendCommand(createCommand2(to_string(mid)));
+
+        // Sleep for 1 second
+        usleep(1000000);
+
+        // Check length of module
+        for (auto &motor : motors) {
+            if (motor->getId() == mid) {
+                motor->setLength(getLength(motor->getId()));
+                motor->isMoving = false;
+            }
+        }
+    }
+}
+
+
+
+int CommunicationHandler::getLength(int mid) {
+    if (arduino->isConnected()) {
+        // send command
+        sendCommand(createCommand6(to_string(mid)));
+        usleep(100000);
+
+        // wait for response
+        string response = "";
         bool isWaiting = true;
-        string message;
         while (isWaiting) {
-            auto *incomingData = new char[4];
+            auto *incomingData = new char[10];
             int read_result = arduino->readSerialPort(incomingData, MAX_DATA_LENGTH);
             if (read_result > 0) {
-                message.append(incomingData);
-                cout << "Received message: " << message << endl;
-                if (message.find('#') != string::npos) {
-                    unsigned long position = message.find('|');
-                    string mid = message.substr(position + 1, position + 2);
-                    list[stoi(mid) - 1] = true;
-
-                    // Send Acknowledge to the correct module
-                    sendCommand(createCommand3(mid));
-
-                    message.clear();
-                    bool hasFalse = true;
-                    for (int i = 0; i < motors.size(); ++i) {
-                        if (!list[i])
-                            hasFalse = false;
-                    }
-                    if (hasFalse)
-                        isWaiting = false;
+                response.append(incomingData);
+                cout << "Received message: " << response << endl;
+                if (response.find('#') != string::npos) {
+                    isWaiting = false;
                 }
+            } else {
+                sendCommand(createCommand6(to_string(mid)));
             }
         }
-        for (auto &motor : motors) {
-            motor->setLength(motor->getDesiredLength());
-        }
+        string position = response.substr(response.find('|', 4) + 1, response.find('#'));
+        response.clear();
+        return stoi(position);
     }
 }
 
-int CommunicationHandler::getEncoderPos(int mid) {
-
-    // send command
-    sendCommand(createCommand6(to_string(mid)));
-
-    // wait for response
-    string response = "";
-    bool isWaiting = true;
-    while (isWaiting) {
-        auto *incomingData = new char[10];
-        int read_result = arduino->readSerialPort(incomingData, MAX_DATA_LENGTH);
-        if (read_result > 0) {
-            response.append(incomingData);
-            cout << "Received message: " << response << endl;
-            if (response.find('#') != string::npos) {
-                isWaiting = false;
-            }
-        }
-    }
-    string position = response.substr(response.find('|', 4) + 1, response.find('#'));
-    response.clear();
-    return stoi(position);
-}
-
-void CommunicationHandler::setEncoderPos(int mid, int pos) {
-    sendCommand(createCommand6(to_string(mid)));
+void CommunicationHandler::setLength(int mid, int pos) {
+    if (arduino->isConnected())
+        sendCommand(createCommand7(to_string(mid), to_string(pos)));
 }
 
 void CommunicationHandler::sendCommand(std::string command) {
@@ -137,21 +117,9 @@ string CommunicationHandler::createCommand1(const string &MID, const string &Len
     return command;
 }
 
-string CommunicationHandler::createCommand2() {
-    return "*2|0#";
-}
-
-string CommunicationHandler::createCommand3(const string &MID) {
+string CommunicationHandler::createCommand2(const string &MID) {
     string command;
-    command.append("*3|");
-    command.append(MID);
-    command.append("#");
-    return command;
-}
-
-string CommunicationHandler::createCommand4(const string &MID) {
-    string command;
-    command.append("*4|");
+    command.append("*2|");
     command.append(MID);
     command.append("#");
     return command;
@@ -174,3 +142,4 @@ string CommunicationHandler::createCommand7(const string &mid, const string &pos
     command.append("#");
     return command;
 }
+
