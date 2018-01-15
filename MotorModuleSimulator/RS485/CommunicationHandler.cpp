@@ -92,15 +92,16 @@ void CommunicationHandler::executeMove(vector<MotorModule *> motors) {
     }
 }
 
-
 int CommunicationHandler::getEncoderPos(int mid) {
-    cout << "sending to: " << mid << endl;
+
+    // send command
     sendCommand(createCommand6(to_string(mid)));
 
+    // wait for response
     string response;
     bool isWaiting = true;
     while (isWaiting) {
-        auto *incomingData = new char[12];
+        auto *incomingData = new char[50];
         int read_result = arduino->readSerialPort(incomingData, MAX_DATA_LENGTH);
         if (read_result > 0) {
             response.append(incomingData);
@@ -110,6 +111,7 @@ int CommunicationHandler::getEncoderPos(int mid) {
                 isWaiting = false;
             }
         }
+        delete[] incomingData;
     }
 
     int first = response.find('|', 4) + 1;
@@ -123,6 +125,12 @@ void CommunicationHandler::setEncoderPos(int mid, int pos){
     sendCommand(createCommand6(to_string(mid)));
 }
 
+void CommunicationHandler::sendCommand(std::string command) {
+    auto *cCommand = new char[command.length() + 1];
+    std::strcpy(cCommand, command.c_str());
+    arduino->writeSerialPort(cCommand, static_cast<unsigned int>(strlen(cCommand)));
+    delete[] cCommand;
+}
 
 string CommunicationHandler::createCommand1(const string &MID, const string &Length, const string &Speed) {
     string command;
@@ -135,15 +143,6 @@ string CommunicationHandler::createCommand1(const string &MID, const string &Len
     command.append("#");
     return command;
 }
-
-void CommunicationHandler::sendCommand(std::string command) {
-    auto *cCommand = new char[command.length() + 1];
-    std::strcpy(cCommand, command.c_str());
-    arduino->writeSerialPort(cCommand, static_cast<unsigned int>(strlen(cCommand)));
-    delete[] cCommand;
-}
-
-
 
 string CommunicationHandler::createCommand2() {
     return "*2|0#";
@@ -173,7 +172,7 @@ string CommunicationHandler::createCommand6(const string &MID) {
     return command;
 }
 
-string CommunicationHandler::createCommand7(const string &mid, const string &pos){
+string CommunicationHandler::createCommand7(const string &mid, const string &pos) {
     string command;
     command.append("*7|");
     command.append(mid);
@@ -181,5 +180,4 @@ string CommunicationHandler::createCommand7(const string &mid, const string &pos
     command.append(pos);
     command.append("#");
     return command;
-
 }
