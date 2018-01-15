@@ -41,7 +41,7 @@ void CommunicationHandler::setLength(int mid, int length, int speed) {
         }
 
         // Send Acknowledge to the correct module
-        sendCommand(createCommand3(to_string(mid));
+        sendCommand(createCommand3(to_string(mid)));
     }
 }
 
@@ -92,7 +92,42 @@ void CommunicationHandler::executeMove(vector<MotorModule *> motors) {
     }
 }
 
+int CommunicationHandler::getEncoderPos(int mid) {
+    cout << "sending to: " << mid << endl;
+    sendCommand(createCommand6(to_string(mid)));
+
+    string response;
+    bool isWaiting = true;
+    while (isWaiting) {
+        auto *incomingData = new char[11];
+        int read_result = arduino->readSerialPort(incomingData, MAX_DATA_LENGTH);
+        if (read_result > 0) {
+            response.append(incomingData);
+            cout << "Received message: " << response << endl;
+            if (response.find('#') != string::npos) {
+                string msg = response.substr(0, response.find('#') + 1);
+                isWaiting = false;
+            }
+        }
+    }
+
+    unsigned first = response.find('|', 2);
+    unsigned last = response.find('#');
+    int length = stoi(response.substr(first, last));
+    cout << "got length: " << length << endl;
+
+    return length;
+}
+
+void CommunicationHandler::sendCommand(std::string command) {
+    auto *cCommand = new char[command.length() + 1];
+    std::strcpy(cCommand, command.c_str());
+    arduino->writeSerialPort(cCommand, static_cast<unsigned int>(strlen(cCommand)));
+    delete[] cCommand;
+}
+
 string CommunicationHandler::createCommand1(const string &MID, const string &Length, const string &Speed) {
+
     string command;
     command.append("*1|");
     command.append(MID);
@@ -124,9 +159,10 @@ string CommunicationHandler::createCommand4(const string &MID) {
     return command;
 }
 
-void CommunicationHandler::sendCommand(std::string command) {
-    auto *cCommand = new char[command.length() + 1];
-    std::strcpy(cCommand, command.c_str());
-    arduino->writeSerialPort(cCommand, static_cast<unsigned int>(strlen(cCommand)));
-    delete[] cCommand;
+string CommunicationHandler::createCommand6(const string &MID) {
+    string command;
+    command.append("*6|");
+    command.append(MID);
+    command.append("#");
+    return command;
 }

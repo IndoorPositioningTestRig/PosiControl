@@ -32,6 +32,7 @@ Controller::Controller(char *port_name) {
         cout << "1: Set length" << endl;
         cout << "2: Go" << endl;
         cout << "3: Status" << endl;
+        cout << "4: Set motor length" << endl;
         cout << "5: execute square" << endl;
         cout << "0: quit" << endl;
         getline(cin, command);
@@ -70,6 +71,10 @@ Controller::Controller(char *port_name) {
                         cout << "Speed: " << motor->getSpeed() << endl;
                         cout << "-------------------------" << endl;
                     }
+                    break;
+                case 4:
+                    cout << "----------Custom Motor Length---------" << endl;
+                    setCustomMotorLength();
                     break;
                 case 5:
                     // execute square
@@ -125,4 +130,27 @@ void Controller::setProbePosition(double x, double y, double z) {
 
 void Controller::addMotorModule(int id, int x, int y, int z) {
     motors.push_back(new MotorModule(id, x, y, z));
+}
+
+void Controller::setCustomMotorLength(){
+    cout << "Select motor(s) finish with 0" << endl;
+    for(int i = 0; i < motors.size(); i++){
+        cout << "motor: " << motors[i]->getId() << endl;
+    }
+    bool done = false;
+    vector<int> motorIds;
+    while(!done){
+        string s;
+        getline(cin, s);
+        int mId = stoi(s);
+        if(mId != 0){
+            motorIds.push_back(mId);
+        }else{
+            done = true;
+        }
+    }
+
+    int length = rs485->getEncoderPos(1);
+
+
 }
