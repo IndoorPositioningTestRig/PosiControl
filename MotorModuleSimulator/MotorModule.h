@@ -6,6 +6,14 @@ class MotorModule {
 public:
     MotorModule(int, int, int, int);
 
+    int getEncoderPos() const {
+        return encoderPosition;
+    }
+
+    int setEncoderPosition(int newEncoderPos){
+        this->encoderPosition = newEncoderPos;
+    }
+
     int getLength() const {
         return length;
     }
@@ -57,4 +65,5 @@ private:
     int length = 0;
     int speed = 0;
     int position[3] = {0, 0, 0};
+    int encoderPosition  = 0;
 };
