@@ -6,27 +6,15 @@ class MotorModule {
 public:
     MotorModule(int, int, int, int);
 
-    int getEncoderPos() const {
-        return encoderPosition;
+    void setLength(int length) {
+        this->length = length;
     }
 
-    int setEncoderPosition(int newEncoderPos){
-        this->encoderPosition = newEncoderPos;
+    void setDesiredLength(int length) {
+        this->desiredLength = length;
     }
 
-    int getLength() const {
-        return length;
-    }
-
-    void setLength(int currentLength) {
-        this->length = currentLength;
-    }
-
-    void setDesiredLength(int lengthToSet) {
-        this->desiredLength = lengthToSet;
-    }
-
-    void setSpeed(int speed){
+    void setSpeed(int speed) {
         this->speed = speed;
     }
 
@@ -54,16 +42,14 @@ public:
         return speed;
     }
 
-    void commandSetLength(int Length, int Speed) {
-        setDesiredLength(Length);
-        setSpeed(Speed);
+    int getLength() const {
+        return length;
     }
 
 private:
-    int id = -1;
-    int desiredLength = 0;
-    int length = 0;
-    int speed = 0;
-    int position[3] = {0, 0, 0};
-    int encoderPosition  = 0;
+    int id;
+    int desiredLength;
+    int length;
+    int speed;
+    int position[3];
 };

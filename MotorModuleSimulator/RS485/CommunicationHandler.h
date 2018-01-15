@@ -10,22 +10,29 @@ using namespace std;
 
 class CommunicationHandler {
 public:
-    CommunicationHandler(char *serialPort);
+    explicit CommunicationHandler(char *serialPort);
+
+    ~CommunicationHandler();
 
     void setLength(int mid, int length, int speed);
 
-    void executeMove( vector<MotorModule *> motors);
+    void executeMove(vector<MotorModule *> motors);
+
     int getEncoderPos(int mid);
     void setEncoderPos(int mid, int pos);
 private:
     SerialPort *arduino;
 
-    char *createCommand1(const string &mid, const string &length, const string &speed);
+    void sendCommand(std::string command);
 
-    char *createCommand3(const string &mid);
+    string createCommand1(const string &mid, const string &length, const string &speed);
 
+    string createCommand2();
 
-    std::string createCommand4(const string &mid);
-    char * createCommand6(const string &mid);
+    string createCommand3(const string &mid);
+
+    string createCommand4(const string &mid);
+
     char * createCommand7(const string &mid, const string & pos);
+    string createCommand6(const string &mid);
 };
