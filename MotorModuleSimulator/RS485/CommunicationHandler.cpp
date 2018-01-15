@@ -37,7 +37,6 @@ void CommunicationHandler::setLength(int mid, int length, int speed) {
                     message.clear();
                 }
             }
-            delete[] incomingData;
         }
 
         // Send Acknowledge to the correct module
@@ -84,7 +83,6 @@ void CommunicationHandler::executeMove(vector<MotorModule *> motors) {
                         isWaiting = false;
                 }
             }
-            delete[] incomingData;
         }
         for (auto &motor : motors) {
             motor->setLength(motor->getDesiredLength());
@@ -111,7 +109,6 @@ int CommunicationHandler::getEncoderPos(int mid) {
                 isWaiting = false;
             }
         }
-        delete[] incomingData;
     }
 
     int first = response.find('|', 4) + 1;
