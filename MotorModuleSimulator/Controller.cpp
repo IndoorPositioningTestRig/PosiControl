@@ -12,10 +12,6 @@ Controller::Controller(char *port_name) {
     addMotorModule(2, 1840, 0, 1840);
     addMotorModule(3, 1840, 1840, 1840);
     addMotorModule(4, 0, 1840, 1840);
-//    addMotorModule(5, 0, 0, 2000);
-//    addMotorModule(6, 2000, 0, 2000);
-//    addMotorModule(7, 0, 2000, 2000);
-//    addMotorModule(8, 2000, 2000, 2000);
 
     for (auto &motor : motors) {
         motor->setLength(1683);
@@ -104,6 +100,13 @@ Controller::Controller(char *port_name) {
     getline(std::cin, a);
 }
 
+Controller::~Controller() {
+    for (auto &motor : motors) {
+        delete motor;
+    }
+    delete rs485;
+}
+
 void Controller::setProbePosition(double x, double y, double z) {
     probePosition[0] = x;
     probePosition[1] = y;
@@ -113,9 +116,10 @@ void Controller::setProbePosition(double x, double y, double z) {
         double b = pow(motor->getY() - y, 2);
         double c = pow(motor->getZ() - z, 2);
         auto desiredLength = int(sqrt(a + b + c));
-        int time = 3; // 10 seconds to move to the position
+        int time = 3; // 3 seconds to move to the position
         int speed = abs((motor->getLength() - desiredLength) / time);
-        motor->commandSetLength(desiredLength, speed);
+        motor->setSpeed(speed);
+        motor->setDesiredLength(desiredLength);
     }
 }
 

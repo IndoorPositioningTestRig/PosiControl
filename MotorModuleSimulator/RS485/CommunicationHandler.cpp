@@ -1,3 +1,4 @@
+#include <cstring>
 #include "CommunicationHandler.h"
 
 CommunicationHandler::CommunicationHandler(char *serialPort) {
@@ -8,20 +9,22 @@ CommunicationHandler::CommunicationHandler(char *serialPort) {
         cout << "ERROR, check port name" << endl;
 }
 
+CommunicationHandler::~CommunicationHandler() {
+    delete arduino;
+}
+
 void CommunicationHandler::setLength(int mid, int length, int speed) {
     if (arduino->isConnected()) {
 
         // Create set length command and publish it on the bus
-        char *cCommand = createCommand1(to_string(mid), to_string(length), to_string(speed));
-        arduino->writeSerialPort(cCommand, strlen(cCommand));
-        delete[] cCommand;
+        sendCommand(createCommand1(to_string(mid), to_string(length), to_string(speed)));
 
         // Wait for Done
         string response = createCommand4(to_string(mid));
         bool isWaiting = true;
         string message;
         while (isWaiting) {
-            char *incomingData = new char[4];
+            auto *incomingData = new char[4];
             int read_result = arduino->readSerialPort(incomingData, MAX_DATA_LENGTH);
             if (read_result > 0) {
                 message.append(incomingData);
@@ -34,11 +37,11 @@ void CommunicationHandler::setLength(int mid, int length, int speed) {
                     message.clear();
                 }
             }
+            delete[] incomingData;
         }
 
         // Send Acknowledge to the correct module
-        char *cCommand3 = createCommand3(to_string(mid));
-        arduino->writeSerialPort(cCommand3, strlen(cCommand3));
+        sendCommand(createCommand3(to_string(mid));
     }
 }
 
@@ -51,17 +54,14 @@ void CommunicationHandler::executeMove(vector<MotorModule *> motors) {
     }
 
     if (arduino->isConnected()) {
-        // Create command
-        char *cCommand = "*2|0#";
-
         // Send command
-        arduino->writeSerialPort(cCommand, strlen(cCommand));
+        sendCommand(createCommand2());
 
         // Wait for responses from all modules
         bool isWaiting = true;
         string message;
         while (isWaiting) {
-            char *incomingData = new char[4];
+            auto *incomingData = new char[4];
             int read_result = arduino->readSerialPort(incomingData, MAX_DATA_LENGTH);
             if (read_result > 0) {
                 message.append(incomingData);
@@ -72,8 +72,8 @@ void CommunicationHandler::executeMove(vector<MotorModule *> motors) {
                     list[stoi(mid) - 1] = true;
 
                     // Send Acknowledge to the correct module
-                    char *cCommand3 = createCommand3(mid);
-                    arduino->writeSerialPort(cCommand3, strlen(cCommand3));
+                    sendCommand(createCommand3(mid));
+
                     message.clear();
                     bool hasFalse = true;
                     for (int i = 0; i < motors.size(); ++i) {
@@ -84,44 +84,49 @@ void CommunicationHandler::executeMove(vector<MotorModule *> motors) {
                         isWaiting = false;
                 }
             }
+            delete[] incomingData;
         }
-        for (int i = 0; i < motors.size(); ++i) {
-            motors[i]->setLength(motors[i]->getDesiredLength());
+        for (auto &motor : motors) {
+            motor->setLength(motor->getDesiredLength());
         }
     }
 }
 
-char *CommunicationHandler::createCommand1(const string &MID, const string &Length, const string &Speed) {
+string CommunicationHandler::createCommand1(const string &MID, const string &Length, const string &Speed) {
     string command;
-    command.append("*");
-    command.append("1|");
+    command.append("*1|");
     command.append(MID);
     command.append("|");
     command.append(Length);
     command.append("|");
     command.append(Speed);
     command.append("#");
-    char *cCommand = new char[command.length() + 1];
-    strcpy(cCommand, command.c_str());
-    return cCommand;
+    return command;
 }
 
-char *CommunicationHandler::createCommand3(const string &MID) {
+string CommunicationHandler::createCommand2() {
+    return "*2|0#";
+}
+
+string CommunicationHandler::createCommand3(const string &MID) {
     string command;
-    command.append("*");
-    command.append("3|");
+    command.append("*3|");
     command.append(MID);
     command.append("#");
-    char *cCommand = new char[command.length() + 1];
-    strcpy(cCommand, command.c_str());
-    return cCommand;
+    return command;
 }
 
 string CommunicationHandler::createCommand4(const string &MID) {
     string command;
-    command.append("*");
-    command.append("4|");
+    command.append("*4|");
     command.append(MID);
     command.append("#");
     return command;
+}
+
+void CommunicationHandler::sendCommand(std::string command) {
+    auto *cCommand = new char[command.length() + 1];
+    std::strcpy(cCommand, command.c_str());
+    arduino->writeSerialPort(cCommand, static_cast<unsigned int>(strlen(cCommand)));
+    delete[] cCommand;
 }
