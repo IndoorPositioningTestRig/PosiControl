@@ -19,6 +19,7 @@ public:
 
 private:
     void setCustomMotorLength();
+    void calibrateProbe();
     double probePosition[3];
     std::vector<MotorModule *> motors;
     CommunicationHandler *rs485;

@@ -33,6 +33,7 @@ private:
 
     string createCommand4(const string &mid);
 
-    char * createCommand7(const string &mid, const string & pos);
     string createCommand6(const string &mid);
+
+    string createCommand7(const string &mid, const string & pos);
 };

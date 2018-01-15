@@ -46,7 +46,16 @@ public:
         return length;
     }
 
+    int getEncoderPos() const {
+        return encoderPos;
+    }
+
+    void setEncoderPos(int position) {
+        this->encoderPos = position;
+    }
+
 private:
+    int encoderPos;
     int id;
     int desiredLength;
     int length;

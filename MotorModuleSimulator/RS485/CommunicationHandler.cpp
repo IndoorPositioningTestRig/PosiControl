@@ -100,7 +100,7 @@ int CommunicationHandler::getEncoderPos(int mid) {
     string response;
     bool isWaiting = true;
     while (isWaiting) {
-        auto *incomingData = new char[11];
+        auto *incomingData = new char[12];
         int read_result = arduino->readSerialPort(incomingData, MAX_DATA_LENGTH);
         if (read_result > 0) {
             response.append(incomingData);
@@ -117,12 +117,14 @@ int CommunicationHandler::getEncoderPos(int mid) {
     string position = response.substr(first, last - first);
     int length = stoi(position);
     return length;
+}
 
+void CommunicationHandler::setEncoderPos(int mid, int pos){
+    sendCommand(createCommand6(to_string(mid)));
 }
 
 
 string CommunicationHandler::createCommand1(const string &MID, const string &Length, const string &Speed) {
-
     string command;
     command.append("*1|");
     command.append(MID);
@@ -171,15 +173,13 @@ string CommunicationHandler::createCommand6(const string &MID) {
     return command;
 }
 
-char *CommunicationHandler::createCommand7(const string &mid, const string &pos){
+string CommunicationHandler::createCommand7(const string &mid, const string &pos){
     string command;
     command.append("*7|");
     command.append(mid);
     command.append("|");
     command.append(pos);
     command.append("#");
-    char *cCommand = new char[command.length() + 1];
-    strcpy(cCommand, command.c_str());
-    return cCommand;
+    return command;
 
 }

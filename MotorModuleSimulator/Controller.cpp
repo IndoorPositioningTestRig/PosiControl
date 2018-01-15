@@ -34,6 +34,7 @@ Controller::Controller(char *port_name) {
         cout << "3: Status" << endl;
         cout << "4: Set motor length" << endl;
         cout << "5: execute square" << endl;
+        cout << "6: calibrate" << endl;
         cout << "0: quit" << endl;
         getline(cin, command);
         if (!command.empty()) {
@@ -88,6 +89,10 @@ Controller::Controller(char *port_name) {
                         cout << "executing move" << endl;
                         rs485->executeMove(motors);
                     }
+                    break;
+                case 6:
+                    cout <<"Calibrating.." << endl;
+                    calibrateProbe();
                     break;
                 case 0:
                     cout << "Bye" << endl;
@@ -179,5 +184,32 @@ void Controller::setCustomMotorLength(){
     cout << "done, press enter to move" << endl;
     cout << "moving motors.." << endl;
     rs485->executeMove(motors);
+    cout << "done" << endl;
+}
+
+void Controller::calibrateProbe(){
+    cout <<"place the probe on a known position, press enter to continue" << endl;
+    string input;
+    getline(cin, input );
+    for(auto & m : motors){
+        int length = rs485->getEncoderPos(m->getId());
+        m->setEncoderPos(length);
+    }
+    cout << "current motor lengths" << endl;
+    for(auto & m: motors){
+        cout << "motor " << m->getId() << " length: " << m->getEncoderPos() << endl;
+    }
+    cout << "set new motor lengths: " << endl;
+    for(auto & m: motors){
+        cout << "motor " << m->getId() << endl;
+        string lengthString;
+        getline(cin, lengthString);
+        int encoderLength = stoi(lengthString);
+        m->setEncoderPos(encoderLength);
+    }
+    cout << "program setting correct motor length.. " << endl;
+    for(auto &m : motors){
+        rs485->setEncoderPos(m->getId(), m->getEncoderPos());
+    }
     cout << "done" << endl;
 }
