@@ -2,9 +2,9 @@
 
 using namespace std;
 
-
 Controller::Controller(char *port_name) {
 
+    // Initialise RS485 communication through arduino
     rs485 = new CommunicationHandler(port_name);
 
     // Create motor modules
@@ -13,94 +13,64 @@ Controller::Controller(char *port_name) {
 //    addMotorModule(3, 1840, 1840, 1840);
 //    addMotorModule(4, 0, 1840, 1840);
 
+    // set hardcoded motor length
     for (auto &motor : motors) {
         motor->setLength(1683);
     }
-    int figure[4][3] = {
-            {920, 920,  1150},
-            {920, 1150, 1150},
-            {920, 1150, 920},
-            {920, 920,  920}
-    };;
+
+    menu();
+}
+
+void Controller::addMotorModule(int id, int x, int y, int z) {
+    motors.push_back(new MotorModule(id, x, y, z));
+}
+
+Controller::~Controller() {
+    for (auto &motor : motors) {
+        delete motor;
+    }
+    delete rs485;
+}
+
+void Controller::menu() {
     std::string command;
-    std::string x;
-    std::string y;
-    std::string z;
     bool isRunning = true;
     while (isRunning) {
         cout << "Commands:" << endl;
-        cout << "1: Set length" << endl;
-        cout << "2: Go" << endl;
+        cout << "1: Set probe position" << endl;
+        cout << "2: Execute move" << endl;
         cout << "3: Status" << endl;
         cout << "4: Set motor length" << endl;
-        cout << "5: execute square" << endl;
-        cout << "6: calibrate" << endl;
-        cout << "0: quit" << endl;
+        cout << "5: Execute pattern" << endl;
+        cout << "6: Calibrate modules" << endl;
+        cout << "0: Exit" << endl;
         getline(cin, command);
         if (!command.empty()) {
             switch (stoi(command)) {
-                case 1:
-                    // request x, y, z coordinates
-                    std::cout << "X: ";
-                    getline(std::cin, x);
-
-                    std::cout << "Y: ";
-                    getline(std::cin, y);
-
-                    std::cout << "Z: ";
-                    getline(std::cin, z);
-
-                    setProbePosition(std::stod(x), std::stod(y), std::stod(z));
-                    for (MotorModule *motor: motors) {
-                        rs485->setDesiredLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
-                    }
-                    cout << "Length set" << endl;
+                case 1: // Setting length
+                    setLength();
                     break;
-                case 2:
-                    // send go
-                    rs485->executeMove(motors);
-                    cout << "executing move" << endl;
+                case 2: // Executing move
+                    executeMove();
                     break;
-                case 3:
-                    cout << "----------Status---------" << endl;
-                    for (MotorModule *motor: motors) {
-                        cout << "Motor module: " << motor->getId() << endl;
-                        cout << "X: " << motor->getX() << " - Y: " << motor->getY() << " - Z: " << motor->getZ()
-                             << endl;
-                        cout << "Desired length: " << motor->getDesiredLength() << " - Length: " << motor->getLength()
-                             << endl;
-                        cout << "Speed: " << motor->getSpeed() << endl;
-                        cout << "-------------------------" << endl;
-                    }
+                case 3: // Status
+                    status();
                     break;
-                case 4:
-                    cout << "----------Custom Motor Length---------" << endl;
+                case 4: // Set length for single motor
                     setCustomMotorLength();
                     break;
-                case 5:
-                    // execute square
-                    cout << "Enter loop" << endl;
-                    for (auto &i : figure) {
-                        cout << "setting probe position" << endl;
-                        setProbePosition(i[0], i[1], i[2]);
-                        for (MotorModule *motor: motors) {
-                            rs485->setDesiredLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
-                        }
-                        cout << "executing move" << endl;
-                        rs485->executeMove(motors);
-                    }
+                case 5: // Execute defined pattern
+                    executePattern();
                     break;
-                case 6:
-                    cout << "Calibrating.." << endl;
+                case 6: // Setup probe
                     calibrateProbe();
                     break;
-                case 0:
+                case 0: // Exit
                     cout << "Bye" << endl;
                     isRunning = false;
                     break;
-                default:
+                default: // if the number is not known
                     cout << "unknown command" << endl;
-                    command = "";
                     break;
             }
             command = "";
@@ -110,11 +80,29 @@ Controller::Controller(char *port_name) {
     getline(std::cin, a);
 }
 
-Controller::~Controller() {
-    for (auto &motor : motors) {
-        delete motor;
+void Controller::setLength() {
+
+    // request x, y, z coordinates
+    string x, y, z;
+
+    cout << "Please enter your Coordinates." << endl;
+    cout << "X: ";
+    getline(cin, x);
+
+    cout << "Y: ";
+    getline(cin, y);
+
+    cout << "Z: ";
+    getline(cin, z);
+
+    cout << "Calculating length." << endl;
+    setProbePosition(stod(x), stod(y), stod(z));
+
+    cout << "Sending length to modules." << endl;
+    for (MotorModule *motor: motors) {
+        rs485->setDesiredLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
     }
-    delete rs485;
+    cout << "All modules have the correct length" << endl;
 }
 
 void Controller::setProbePosition(double x, double y, double z) {
@@ -133,11 +121,26 @@ void Controller::setProbePosition(double x, double y, double z) {
     }
 }
 
-void Controller::addMotorModule(int id, int x, int y, int z) {
-    motors.push_back(new MotorModule(id, x, y, z));
+void Controller::executeMove() {
+    cout << "Executing move." << endl;
+    rs485->executeMove(motors);
+}
+
+void Controller::status() {
+    cout << "----------Status---------" << endl;
+    for (MotorModule *motor: motors) {
+        cout << "Motor module: " << motor->getId() << endl;
+        cout << "X: " << motor->getX() << " - Y: " << motor->getY() << " - Z: " << motor->getZ()
+             << endl;
+        cout << "Desired length: " << motor->getDesiredLength() << " - Length: " << motor->getLength()
+             << endl;
+        cout << "Speed: " << motor->getSpeed() << endl;
+        cout << "-------------------------" << endl;
+    }
 }
 
 void Controller::setCustomMotorLength() {
+    cout << "----------Custom Motor Length---------" << endl;
     cout << "Select motor(s) finish with enter or 0" << endl;
     for (auto &motor : motors) {
         cout << "motor: " << motor->getId() << endl;
@@ -192,7 +195,27 @@ void Controller::setCustomMotorLength() {
     cout << "done" << endl;
 }
 
+void Controller::executePattern() {
+    int figure[4][3] = {
+            {920, 920,  1150},
+            {920, 1150, 1150},
+            {920, 1150, 920},
+            {920, 920,  920}
+    };;
+    cout << "Enter loop" << endl;
+    for (auto &i : figure) {
+        cout << "setting probe position" << endl;
+        setProbePosition(i[0], i[1], i[2]);
+        for (MotorModule *motor: motors) {
+            rs485->setDesiredLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
+        }
+        cout << "executing move" << endl;
+        rs485->executeMove(motors);
+    }
+}
+
 void Controller::calibrateProbe() {
+    cout << "Probe setup." << endl;
     cout << "place the probe on a known position, press enter to continue" << endl;
     string input;
     getline(cin, input);
@@ -218,3 +241,8 @@ void Controller::calibrateProbe() {
     }
     cout << "done" << endl;
 }
+
+
+
+
+

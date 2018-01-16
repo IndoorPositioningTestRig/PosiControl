@@ -9,18 +9,31 @@
 
 class Controller {
 public:
-    Controller(char *port_name);
+    explicit Controller(char *port_name);
 
     ~Controller();
 
-    void setProbePosition(double, double, double);
-
-    void addMotorModule(int, int, int, int);
-
 private:
-    void setCustomMotorLength();
-    void calibrateProbe();
     double probePosition[3];
     std::vector<MotorModule *> motors;
     CommunicationHandler *rs485;
+
+    void menu();
+
+    void setLength();
+
+    void executeMove();
+
+    void status();
+
+    void setProbePosition(double, double, double);
+
+    void setCustomMotorLength();
+
+    void executePattern();
+
+    void calibrateProbe();
+
+    void addMotorModule(int, int, int, int);
+
 };
