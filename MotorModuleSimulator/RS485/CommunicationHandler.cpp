@@ -73,10 +73,37 @@ int CommunicationHandler::getLength(int mid) {
                 }
             }
         }
-        string position = response.substr(response.find('|', 4) + 1, response.find('#'));
-        int positionNr = stoi(position);
+        unsigned long start = response.find('|', 4) + 1;
+        string position = response.substr(start, response.size() - start - 1);
         response.clear();
-        return positionNr;
+        return stoi(position);
+    }
+}
+
+int CommunicationHandler::getDesiredLengthAndSpeed(int mid) {
+    if (arduino->isConnected()) {
+        // send command
+        sendCommand(createCommand3(to_string(mid)));
+
+        // wait for response
+        string response;
+        bool isWaiting = true;
+        while (isWaiting) {
+            memset(incomingData, 0, sizeof(incomingData));
+            int read_result = arduino->readSerialPort(incomingData, sizeof(incomingData));
+            if (read_result > 0) {
+                response.append(incomingData);
+                usleep(100000);
+                if (response.find('#') != string::npos) {
+                    cout << "Received message: " << response << endl;
+                    isWaiting = false;
+                }
+            }
+        }
+        unsigned long start = response.find('|', 4) + 1;
+        string desiredLength = response.substr(start, response.size() - start - 1);
+        response.clear();
+        return stoi(desiredLength);
     }
 }
 
@@ -107,6 +134,14 @@ string CommunicationHandler::createCommand1(const string &MID, const string &Len
 string CommunicationHandler::createCommand2(const string &MID) {
     string command;
     command.append("*2|");
+    command.append(MID);
+    command.append("#");
+    return command;
+}
+
+string CommunicationHandler::createCommand3(const string &MID) {
+    string command;
+    command.append("*3|");
     command.append(MID);
     command.append("#");
     return command;

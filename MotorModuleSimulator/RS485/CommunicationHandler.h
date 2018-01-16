@@ -22,18 +22,22 @@ public:
 
     int getLength(int mid);
 
+    int getDesiredLengthAndSpeed(int mid);
+
     void setLength(int mid, int position);
 
 private:
     SerialPort *arduino;
 
-    char incomingData[15];
+    char incomingData[20];
 
     void sendCommand(std::string command);
 
     string createCommand1(const string &mid, const string &length, const string &speed);
 
     string createCommand2(const string &mid);
+
+    string createCommand3(const string &mid);
 
     string createCommand4(const string &mid);
 
