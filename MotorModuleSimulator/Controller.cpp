@@ -8,10 +8,10 @@ Controller::Controller(char *port_name) {
     rs485 = new CommunicationHandler(port_name);
 
     // Create motor modules
-    addMotorModule(1, 0, 0, 1840);
-//    addMotorModule(2, 1840, 0, 1840);
-//    addMotorModule(3, 1840, 1840, 1840);
-//    addMotorModule(4, 0, 1840, 1840);
+    addMotorModule(1, 0, 0, 0);
+    addMotorModule(2, 1840, 0, 1840);
+    addMotorModule(3, 1840, 1840, 1840);
+    addMotorModule(4, 0, 1840, 1840);
 
     // set hardcoded motor length
     for (auto &motor : motors) {
@@ -189,8 +189,15 @@ void Controller::setCustomMotorLength() {
     }
 
     cout << "moving motors.." << endl;
-    for (int i = 0; i < motorIds.size(); i++) {
-        rs485->executeMove(motors, motorIds[i]);
+    for (int motorId : motorIds) {
+        rs485->executeMove(motors, motorId);
+    }
+
+    cout << "requesting length of wire" << endl;
+    // Check length of module
+    for (auto &motor : motors) {
+        motor->setLength(rs485->getLength(motor->getId()));
+        motor->isMoving = false;
     }
     cout << "done" << endl;
 }
