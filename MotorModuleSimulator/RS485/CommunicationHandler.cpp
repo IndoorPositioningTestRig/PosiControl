@@ -49,51 +49,40 @@ void CommunicationHandler::executeMove(vector<MotorModule *> motors, int mid) {
 
         // Send command
         sendCommand(createCommand2(to_string(mid)));
-
-        // Sleep for 1 second
-        usleep(1000000);
-
-        // Check length of module
-        for (auto &motor : motors) {
-            if (motor->getId() == mid) {
-                motor->setLength(getLength(motor->getId()));
-                motor->isMoving = false;
-            }
-        }
     }
 }
 
 int CommunicationHandler::getLength(int mid) {
+
     if (arduino->isConnected()) {
         // send command
-        sendCommand(createCommand6(to_string(mid)));
-        usleep(100000);
+        sendCommand(createCommand4(to_string(mid)));
 
         // wait for response
-        string response = "";
+        string response;
         bool isWaiting = true;
         while (isWaiting) {
-            auto *incomingData = new char[10];
-            int read_result = arduino->readSerialPort(incomingData, MAX_DATA_LENGTH);
+            memset(incomingData, 0, sizeof(incomingData));
+            int read_result = arduino->readSerialPort(incomingData, sizeof(incomingData));
             if (read_result > 0) {
                 response.append(incomingData);
-                cout << "Received message: " << response << endl;
+                usleep(100000);
                 if (response.find('#') != string::npos) {
+                    cout << "Received message: " << response << endl;
                     isWaiting = false;
                 }
-            } else {
-                sendCommand(createCommand6(to_string(mid)));
             }
         }
         string position = response.substr(response.find('|', 4) + 1, response.find('#'));
+        int positionNr = stoi(position);
         response.clear();
-        return stoi(position);
+        return positionNr;
     }
 }
 
 void CommunicationHandler::setLength(int mid, int pos) {
     if (arduino->isConnected())
-        sendCommand(createCommand7(to_string(mid), to_string(pos)));
+        sendCommand(createCommand5(to_string(mid), to_string(pos)));
 }
 
 void CommunicationHandler::sendCommand(std::string command) {
@@ -123,21 +112,23 @@ string CommunicationHandler::createCommand2(const string &MID) {
     return command;
 }
 
-string CommunicationHandler::createCommand6(const string &MID) {
+string CommunicationHandler::createCommand4(const string &MID) {
     string command;
-    command.append("*6|");
+    command.append("*4|");
     command.append(MID);
     command.append("#");
     return command;
 }
 
-string CommunicationHandler::createCommand7(const string &mid, const string &pos) {
+string CommunicationHandler::createCommand5(const string &mid, const string &pos) {
     string command;
-    command.append("*7|");
+    command.append("*5|");
     command.append(mid);
     command.append("|");
     command.append(pos);
     command.append("#");
     return command;
 }
+
+
 

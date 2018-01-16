@@ -27,13 +27,17 @@ public:
 private:
     SerialPort *arduino;
 
+    char incomingData[15];
+
     void sendCommand(std::string command);
 
     string createCommand1(const string &mid, const string &length, const string &speed);
 
     string createCommand2(const string &mid);
 
-    string createCommand6(const string &mid);
+    string createCommand4(const string &mid);
 
-    string createCommand7(const string &mid, const string &pos);
+    string createCommand5(const string &mid, const string &pos);
+
+
 };
