@@ -34,6 +34,8 @@ private:
 
     void calibrateProbe();
 
+    void getDesiredLengthAndSpeed();
+
     void addMotorModule(int, int, int, int);
 
 };

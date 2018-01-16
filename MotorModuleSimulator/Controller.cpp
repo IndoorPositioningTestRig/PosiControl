@@ -8,7 +8,7 @@ Controller::Controller(char *port_name) {
     rs485 = new CommunicationHandler(port_name);
 
     // Create motor modules
-    addMotorModule(1, 0, 0, 0);
+    addMotorModule(1, 0, 0, 1840);
     addMotorModule(2, 1840, 0, 1840);
     addMotorModule(3, 1840, 1840, 1840);
     addMotorModule(4, 0, 1840, 1840);
@@ -43,6 +43,7 @@ void Controller::menu() {
         cout << "4: Set motor length" << endl;
         cout << "5: Execute pattern" << endl;
         cout << "6: Calibrate modules" << endl;
+        cout << "7: Get desired length and speed" << endl;
         cout << "0: Exit" << endl;
         getline(cin, command);
         if (!command.empty()) {
@@ -64,6 +65,9 @@ void Controller::menu() {
                     break;
                 case 6: // Setup probe
                     calibrateProbe();
+                    break;
+                case 7: // Get desired length and speed
+                    getDesiredLengthAndSpeed();
                     break;
                 case 0: // Exit
                     cout << "Bye" << endl;
@@ -99,9 +103,23 @@ void Controller::setLength() {
     setProbePosition(stod(x), stod(y), stod(z));
 
     cout << "Sending length to modules." << endl;
+
     for (MotorModule *motor: motors) {
         rs485->setDesiredLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
     }
+
+    bool hasIncorrectValue;
+    do {
+        hasIncorrectValue = false;
+        for (MotorModule *motor: motors) {
+            if (rs485->getDesiredLengthAndSpeed(motor->getId()) != motor->getDesiredLength()) {
+                hasIncorrectValue = true;
+                rs485->setDesiredLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
+            }
+        }
+
+    } while (hasIncorrectValue);
+
     cout << "All modules have the correct length" << endl;
 }
 
@@ -245,6 +263,18 @@ void Controller::calibrateProbe() {
     cout << "program setting correct motor length.. " << endl;
     for (auto &m : motors) {
         rs485->setLength(m->getId(), m->getEncoderPos());
+    }
+    cout << "done" << endl;
+}
+
+void Controller::getDesiredLengthAndSpeed() {
+    for (auto &m : motors) { ;
+        m->setDesiredLength(rs485->getDesiredLengthAndSpeed(m->getId()));
+    }
+
+    cout << "current stats" << endl;
+    for (auto &m: motors) {
+        cout << "motor " << m->getId() << " - desired length: " << m->getDesiredLength() << endl;
     }
     cout << "done" << endl;
 }
