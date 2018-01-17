@@ -41,9 +41,10 @@ void Controller::menu() {
         cout << "2: Execute move" << endl;
         cout << "3: Status" << endl;
         cout << "4: Set motor length" << endl;
-        cout << "5: Execute pattern" << endl;
+        cout << "5: Execute small square" << endl;
         cout << "6: Calibrate modules" << endl;
         cout << "7: Get desired length and speed" << endl;
+        cout << "8: Execute big square" << endl;
         cout << "0: Exit" << endl;
         getline(cin, command);
         if (!command.empty()) {
@@ -61,13 +62,16 @@ void Controller::menu() {
                     setCustomMotorLength();
                     break;
                 case 5: // Execute defined pattern
-                    executePattern();
+                    executeSmallSquare();
                     break;
                 case 6: // Setup probe
                     calibrateProbe();
                     break;
                 case 7: // Get desired length and speed
                     getDesiredLengthAndSpeed();
+                    break;
+                case 8: // Execute defined pattern
+                    executeBigSquare();
                     break;
                 case 0: // Exit
                     cout << "Bye" << endl;
@@ -220,7 +224,7 @@ void Controller::setCustomMotorLength() {
     cout << "done" << endl;
 }
 
-void Controller::executePattern() {
+void Controller::executeSmallSquare() {
     int figure[4][3] = {
             {920, 920,  1150},
             {920, 1150, 1150},
@@ -238,6 +242,35 @@ void Controller::executePattern() {
         rs485->executeMove(motors);
     }
 }
+
+void Controller::executeBigSquare() {
+    int figure[13][3] = {
+            {1300, 920,  920},
+            {1188, 1188, 920},
+            {920, 1300, 920},
+            {652, 1188,  920},
+            {540, 920,  920},
+            {652, 652,  920},
+            {920, 540,  920},
+            {1188, 652,  920},
+            {1300, 920,  920},
+            {920, 920,  920},
+            {920, 920,  1300},
+            {920, 920,  400},
+            {920, 920,  920}
+    };;
+    cout << "Enter loop" << endl;
+    for (auto &i : figure) {
+        cout << "setting probe position" << endl;
+        setProbePosition(i[0], i[1], i[2]);
+        for (MotorModule *motor: motors) {
+            rs485->setDesiredLength(motor->getId(), motor->getDesiredLength(), motor->getSpeed());
+        }
+        cout << "executing move" << endl;
+        rs485->executeMove(motors);
+    }
+}
+
 
 void Controller::calibrateProbe() {
     cout << "Probe setup." << endl;
@@ -278,6 +311,7 @@ void Controller::getDesiredLengthAndSpeed() {
     }
     cout << "done" << endl;
 }
+
 
 
 

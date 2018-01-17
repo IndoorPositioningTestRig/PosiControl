@@ -30,7 +30,9 @@ private:
 
     void setCustomMotorLength();
 
-    void executePattern();
+    void executeSmallSquare();
+
+    void executeBigSquare();
 
     void calibrateProbe();
 
