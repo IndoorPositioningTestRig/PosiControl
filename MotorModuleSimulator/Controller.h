@@ -34,6 +34,10 @@ private:
 
     void executeBigSquare();
 
+    void executeStressTest();
+
+    void executeTriangle();
+
     void calibrateProbe();
 
     void getDesiredLengthAndSpeed();
