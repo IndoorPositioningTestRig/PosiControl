@@ -1,7 +1,7 @@
 import serial
 import serial.rs485
 
-PORT: str = "22"
+PORT: str = "com6"
 
 
 def main():
