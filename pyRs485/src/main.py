@@ -1,9 +1,10 @@
 import serial
 import serial.rs485
+from serial.rs485 import RS485
 import sys
 import glob
 
-PORT: str = "com6"
+PORT: str = "/dev/ttyS0"
 
 
 def serial_ports():
@@ -37,18 +38,19 @@ def serial_ports():
 
 def main():
     ports = serial_ports()
+    print(ports)
     try:
-        ser = serial.Serial(port=PORT)
+        ser = RS485(port=PORT)
+        # ser = serial.Serial(port=PORT)
     except serial.SerialException:
         print("Failed to open port: " + PORT)
         return
-
-    if not ser.is_open():
+    if not ser.is_open:
         print("Serial port: " + PORT + " is not open")
         return
     ser.rs485_mode = serial.rs485.RS485Settings()
     ser.write(b'hello')
-
+    ser.close()
 
 if __name__ == "__main__":
     main()
