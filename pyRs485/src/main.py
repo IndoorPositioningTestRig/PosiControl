@@ -7,10 +7,14 @@ import wiringpi
 PORT = "/dev/ttyS0"
 RS485_SWITCH = 18
 
+# Write and read are inverted compared to the arduino
+RS485_READ = 0
+RS485_WRITE = 1
+
 
 def read_loop(ser):
     count = 0
-    wiringpi.digitalWrite(RS485_SWITCH, 0)
+    wiringpi.digitalWrite(RS485_SWITCH, RS485_READ)
     while True:
         read = ser.read(1)
         print("read: " + str(read) + " " + str(count))
@@ -20,7 +24,7 @@ def read_loop(ser):
 
 def write_loop(ser):
     count = 0
-    wiringpi.digitalWrite(RS485_SWITCH, 1)
+    wiringpi.digitalWrite(RS485_SWITCH, RS485_WRITE)
     if ser.writable():
         print("Writable!")
     else:
