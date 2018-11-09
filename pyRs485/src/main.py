@@ -7,6 +7,7 @@ PORT = "/dev/ttyS0"
 
 
 def main():
+    # sys.argv
     try:
         ser = RS485(port=PORT)
         # ser = serial.Serial(port=PORT)
@@ -19,8 +20,10 @@ def main():
     ser.rs485_mode = serial.rs485.RS485Settings()
     count = 0
     while True:
-        print("Writing... " + str(count))
-        ser.write("Hello World")
+        read = ser.read(1)
+        print("read: " + str(read) + " " + str(count))
+        # print("Writing... " + str(count))
+        # ser.write(b"Hello World")
         sys.stdout.flush()
         count += 1
 
