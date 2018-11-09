@@ -1,0 +1,3 @@
+/home/stefan/projects/school/positioningRig/PosiControl/MotorModuleSimulator/CMakeFiles/rebuild_cache.dir
+/home/stefan/projects/school/positioningRig/PosiControl/MotorModuleSimulator/CMakeFiles/MotorModuleSimulator.dir
+/home/stefan/projects/school/positioningRig/PosiControl/MotorModuleSimulator/CMakeFiles/edit_cache.dir
