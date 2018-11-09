@@ -15,6 +15,7 @@ RS485_WRITE = 1
 def read_loop(ser):
     count = 0
     wiringpi.digitalWrite(RS485_SWITCH, RS485_READ)
+    print("reading...")
     while True:
         read = ser.readline()
         print("read: " + str(read) + " " + str(count))
