@@ -2,12 +2,15 @@ import serial
 import serial.rs485
 from serial.rs485 import RS485
 import sys
+import wiringpi
 
 PORT = "/dev/ttyS0"
+RS485_SWITCH = 18
 
 
 def read_loop(ser):
     count = 0
+    wiringpi.digitalWrite(RS485_SWITCH, 1)
     while True:
         read = ser.read(1)
         print("read: " + str(read) + " " + str(count))
@@ -17,6 +20,7 @@ def read_loop(ser):
 
 def write_loop(ser):
     count = 0
+    wiringpi.digitalWrite(RS485_SWITCH, 0)
     if ser.writable():
         print("Writable!")
     else:
@@ -30,6 +34,9 @@ def write_loop(ser):
 
 
 def main():
+    wiringpi.wiringPiSetupGpio()
+    wiringpi.pinMode(RS485_SWITCH, wiringpi.OUTPUT)
+
     read = False
     for arg in sys.argv:
         if arg.lower() == "read":
