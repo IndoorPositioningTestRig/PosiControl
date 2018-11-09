@@ -10,7 +10,7 @@ RS485_SWITCH = 18
 
 def read_loop(ser):
     count = 0
-    wiringpi.digitalWrite(RS485_SWITCH, 1)
+    wiringpi.digitalWrite(RS485_SWITCH, 0)
     while True:
         read = ser.read(1)
         print("read: " + str(read) + " " + str(count))
@@ -20,7 +20,7 @@ def read_loop(ser):
 
 def write_loop(ser):
     count = 0
-    wiringpi.digitalWrite(RS485_SWITCH, 0)
+    wiringpi.digitalWrite(RS485_SWITCH, 1)
     if ser.writable():
         print("Writable!")
     else:
