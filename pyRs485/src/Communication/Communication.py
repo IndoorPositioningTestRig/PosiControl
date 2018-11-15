@@ -32,7 +32,7 @@ class Communication:
         length = len(data) + 5 # Add 5, because there are 5 fields in the header
         header = bytes([0x80, SENDER_NUM, target, type, length])
         message = header + data
-        print("sending: " + str(message) + " len: length")
+        print("sending: " + str(message) + " len: " + str(length) + " actual: " + str(len(message)))
 
         if self.state is RS485_UNINITIALIZED:
             raise Exception("Not initialised")
