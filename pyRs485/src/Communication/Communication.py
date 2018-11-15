@@ -28,9 +28,11 @@ class Communication:
             self.state = RS485_READ
             wiringpi.digitalWrite(RS485_SWITCH, RS485_READ)
 
-    def write(self, data: bytes, target: int, type: int):
-        length = len(data) + 5 # Add 5, because there are 5 fields in the header
-        header = bytes([0x80, SENDER_NUM, target, type, length])
+    def write(self, data: bytes, target: int, message_type: int):
+        # Add 5, because there are 5 fields in the header
+        length = len(data) + 5
+        # Build the header and message
+        header = bytes([0x80, SENDER_NUM, target, message_type, length])
         message = header + data
         print("sending: " + str(message) + " len: " + str(length) + " actual: " + str(len(message)))
 

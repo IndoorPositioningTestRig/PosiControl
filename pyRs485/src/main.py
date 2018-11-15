@@ -1,6 +1,3 @@
-import serial
-import serial.rs485
-from serial.rs485 import RS485
 import sys
 from Communication.Communication import Communication
 
@@ -12,7 +9,7 @@ RS485_READ = 0
 RS485_WRITE = 1
 
 
-def read_loop(communication: Communication):
+def read_loop(communication: Communication, once=False):
     print("reading...")
 
     count = 0
@@ -23,7 +20,7 @@ def read_loop(communication: Communication):
         count += 1
 
 
-def write_loop(communication: Communication):
+def write_loop(communication: Communication, once=False):
     count = 0
     while True:
         print("Writing... " + str(count))
@@ -36,15 +33,18 @@ def main():
     communication = Communication()
     communication.setup()
 
+    once = False
     read = False
     for arg in sys.argv:
         if arg.lower() == "read":
             read = True
+        elif arg.lower() == "once":
+            once = True
 
     if read:
-        read_loop(communication)
+        read_loop(communication, once)
     else:
-        write_loop(communication)
+        write_loop(communication, once)
 
 
 if __name__ == "__main__":
