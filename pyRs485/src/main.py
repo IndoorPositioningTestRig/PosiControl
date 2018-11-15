@@ -15,6 +15,8 @@ def read_loop(communication: Communication, once=False):
     count = 0
     while True:
         read = communication.read()
+        if read is None:
+            continue
         print("read: " + read + " " + str(count))
         sys.stdout.flush()
         count += 1

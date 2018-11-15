@@ -65,7 +65,7 @@ class Communication:
             index = 0
             while index < message.length:
                 read = self.ser.read()
-                message.data += str(read)
+                message.data += read.decode('utf-8')
                 index += 1
             return message.data
 
