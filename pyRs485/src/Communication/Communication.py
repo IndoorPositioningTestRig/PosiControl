@@ -54,13 +54,13 @@ class Communication:
         if read == START_BYTE:
             message = Message()
             read = self.ser.read(1)
-            message.sender = int(read)
+            message.sender = int(read, 16)
             read = self.ser.read(1)
-            message.target = int(read)
+            message.target = int(read, 16)
             read = self.ser.read(1)
-            message.message_type = int(read)
+            message.message_type = int(read, 16)
             read = self.ser.read(1)
-            message.length = int(read)
+            message.length = int(read, 16)
 
             index = 0
             while index < message.length:
