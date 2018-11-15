@@ -2,7 +2,7 @@ import serial
 import serial.rs485
 from serial.rs485 import RS485
 import sys
-import wiringpi
+from Communication.Communication import Communication
 
 PORT = "/dev/ttyS0"
 RS485_SWITCH = 18
@@ -12,36 +12,28 @@ RS485_READ = 0
 RS485_WRITE = 1
 
 
-def read_loop(ser):
-    count = 0
-    wiringpi.digitalWrite(RS485_SWITCH, RS485_READ)
+def read_loop(communication: Communication):
     print("reading...")
 
+    count = 0
     while True:
-        read = ser.readline()
+        read = communication.read_line()
         print("read: " + str(read) + " " + str(count))
         sys.stdout.flush()
         count += 1
 
 
-def write_loop(ser):
+def write_loop(communication: Communication):
     count = 0
-    wiringpi.digitalWrite(RS485_SWITCH, RS485_WRITE)
-    if ser.writable():
-        print("Writable!")
-    else:
-        print("Not writable...")
-
     while True:
         print("Writing... " + str(count))
-        ser.write(b"Hello World")
+        communication.write(b"Hello World")
         sys.stdout.flush()
         count += 1
 
 
 def main():
-    wiringpi.wiringPiSetupGpio()
-    wiringpi.pinMode(RS485_SWITCH, wiringpi.OUTPUT)
+    communication = Communication()
 
     read = False
     for arg in sys.argv:
@@ -59,9 +51,9 @@ def main():
         return
     ser.rs485_mode = serial.rs485.RS485Settings()
     if read:
-        read_loop(ser)
+        read_loop(communication)
     else:
-        write_loop(ser)
+        write_loop(communication)
 
 
 if __name__ == "__main__":
