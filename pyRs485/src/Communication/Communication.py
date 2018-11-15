@@ -2,6 +2,7 @@ import serial
 import serial.rs485
 from serial.rs485 import RS485
 import wiringpi
+import struct
 
 PORT = "/dev/ttyS0"
 RS485_SWITCH = 18
@@ -12,7 +13,7 @@ RS485_WRITE = 1
 
 RS485_UNINITIALIZED = 2
 
-SENDER_NUM = 0
+SENDER_NUM = 55
 
 
 class Communication:
@@ -29,11 +30,13 @@ class Communication:
             wiringpi.digitalWrite(RS485_SWITCH, RS485_READ)
 
     def write(self, data: bytes, target: int, message_type: int):
+        fmt = 'B <'
         # Add 5, because there are 5 fields in the header
         length = len(data) + 5
         # Build the header and message
-        header = bytes([0x80, SENDER_NUM, target, message_type, length])
-        message = header + data
+        header = struct.pack(fmt, 0x80, SENDER_NUM, target, message_type, length)
+        # header = bytes([0x80, SENDER_NUM, target, message_type, length])
+        message = header + struct.pack(fmt, data)
         print("sending: " + str(message) + " len: " + str(length) + " actual: " + str(len(message)))
 
         if self.state is RS485_UNINITIALIZED:
