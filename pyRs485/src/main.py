@@ -18,6 +18,8 @@ def read_loop(communication: Communication, once=False):
         print("read: " + str(read) + " " + str(count))
         sys.stdout.flush()
         count += 1
+        if once:
+            return
 
 
 def write_loop(communication: Communication, once=False):
@@ -27,6 +29,8 @@ def write_loop(communication: Communication, once=False):
         communication.write(b"Hello World", 1, 1)
         sys.stdout.flush()
         count += 1
+        if once:
+            return
 
 
 def main():
