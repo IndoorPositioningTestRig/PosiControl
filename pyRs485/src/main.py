@@ -34,22 +34,13 @@ def write_loop(communication: Communication):
 
 def main():
     communication = Communication()
+    communication.setup()
 
     read = False
     for arg in sys.argv:
         if arg.lower() == "read":
             read = True
 
-    try:
-        ser = RS485(port=PORT)
-        # ser = serial.Serial(port=PORT)
-    except serial.SerialException:
-        print("Failed to open port: " + PORT)
-        return
-    if not ser.is_open:
-        print("Serial port: " + PORT + " is not open")
-        return
-    ser.rs485_mode = serial.rs485.RS485Settings()
     if read:
         read_loop(communication)
     else:
