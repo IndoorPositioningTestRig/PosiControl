@@ -53,12 +53,14 @@ class Communication:
         # print("read: " + str(read))
         if read == START_BYTE:
             message = Message()
-            read = self.ser.read(4)
-            print("read: " + str(read, "utf-8"))
-            message.sender = read[0]
-            message.target = read[1]
-            message.message_type = read[2]
-            message.length = read[3]
+            read = self.ser.read(1)
+            message.sender = read
+            read = self.ser.read(1)
+            message.target = read
+            read = self.ser.read(1)
+            message.message_type = read
+            read = self.ser.read(1)
+            message.length = read
 
             index = 0
             while index < message.length:
