@@ -53,17 +53,16 @@ class Communication:
         print("start: " + str(read))
         if read == START_BYTE:
             message = Message()
-            read = self.ser.read(1)
+            read = self.ser.read(4)
             message.sender = int(read[0])
-            read = self.ser.read(1)
-            message.target = int(read[0])
-            read = self.ser.read(1)
-            message.message_type = int(read[0])
-            read = self.ser.read(1)
-            message.length = int(read[0])
+            message.target = int(read[1])
+            message.message_type = int(read[2])
+            message.length = int(read[3])
+            print("meta-data: " + str(read))
 
             read = self.ser.read(message.length)
             message.data += read.decode('utf-8')
+            print("res: " + str(read))
             return message.data
 
     def read_line(self):
