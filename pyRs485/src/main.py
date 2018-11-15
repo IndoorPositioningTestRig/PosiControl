@@ -14,7 +14,7 @@ def read_loop(communication: Communication, once=False):
 
     count = 0
     while True:
-        read = communication.read_line()
+        read = communication.read()
         print("read: " + str(read) + " " + str(count))
         sys.stdout.flush()
         count += 1
