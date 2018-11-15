@@ -34,7 +34,7 @@ class Communication:
         # Add 5, because there are 5 fields in the header
         length = len(data) + 5
         # Build the header and message
-        header = struct.pack(fmt, 0x80, SENDER_NUM, target, message_type, length)
+        header = struct.pack('< 5b', 0x80, SENDER_NUM, target, message_type, length)
         # header = bytes([0x80, SENDER_NUM, target, message_type, length])
         message = header + struct.pack(fmt, data)
         print("sending: " + str(message) + " len: " + str(length) + " actual: " + str(len(message)))
