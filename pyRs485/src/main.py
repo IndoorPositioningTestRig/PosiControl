@@ -27,7 +27,7 @@ def write_loop(communication: Communication):
     count = 0
     while True:
         print("Writing... " + str(count))
-        communication.write(b"Hello World")
+        communication.write(b"Hello World", 1, 1)
         sys.stdout.flush()
         count += 1
 
