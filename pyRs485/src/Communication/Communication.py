@@ -50,7 +50,6 @@ class Communication:
 
     def read(self):
         read = self.ser.read()
-        print("start: " + str(read))
         if read == START_BYTE:
             message = Message()
             # Build the the header
@@ -63,7 +62,6 @@ class Communication:
             if message.length > 0:
                 # Read the message content
                 content = self.ser.read(message.length - 5)
-                print("content: " + str(content))
                 message.data += content.decode('utf-8')
 
             return message.data
