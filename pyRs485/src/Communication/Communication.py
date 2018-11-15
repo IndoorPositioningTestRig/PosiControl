@@ -54,21 +54,26 @@ class Communication:
         if read == START_BYTE:
             message = Message()
             read = self.ser.read(1)
+            print(read)
             message.sender = read
             read = self.ser.read(1)
+            print(read)
             message.target = read
             read = self.ser.read(1)
+            print(read)
             message.message_type = read
             read = self.ser.read(1)
+            print(read)
             message.length = read
 
-            print(message)
+            # print(message)
             index = 0
             while index < message.length:
                 read = self.ser.read()
                 message.data.append(read)
-                # print("read: " + str(message.data, "utf-8"))
-                return message.data
+                print("read: " + str(message.data, "utf-8"))
+                index += 1
+            return message.data
 
     def read_line(self):
         if self.state is RS485_UNINITIALIZED:
