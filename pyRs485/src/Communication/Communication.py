@@ -50,7 +50,7 @@ class Communication:
 
     def read(self):
         read = self.ser.read()
-        print("read: " + str(read))
+        # print("read: " + str(read))
         if read == START_BYTE:
             message = Message()
             read = self.ser.read(4)
@@ -63,7 +63,7 @@ class Communication:
             index = 0
             while index < message.length:
                 read = self.ser.read()
-                print("read: " + str(read))
+                # print("read: " + str(read))
                 message.data.append(read)
                 return message.data
 
