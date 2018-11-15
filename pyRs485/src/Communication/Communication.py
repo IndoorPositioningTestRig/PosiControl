@@ -62,11 +62,12 @@ class Communication:
             read = self.ser.read(1)
             message.length = read
 
+            print(message)
             index = 0
             while index < message.length:
                 read = self.ser.read()
-                print("read: " + str(read, "utf-8"))
                 message.data.append(read)
+                # print("read: " + str(message.data, "utf-8"))
                 return message.data
 
     def read_line(self):
