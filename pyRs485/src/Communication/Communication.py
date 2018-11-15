@@ -30,7 +30,7 @@ class Communication:
             wiringpi.digitalWrite(RS485_SWITCH, RS485_READ)
 
     def write(self, data: bytes, target: int, message_type: int):
-        fmt = 'B <'
+        fmt = '<'
         # Add 5, because there are 5 fields in the header
         length = len(data) + 5
         # Build the header and message
