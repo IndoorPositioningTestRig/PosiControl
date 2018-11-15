@@ -49,7 +49,7 @@ class Communication:
         self.ser.write(message)
 
     def read(self):
-        read = self.ser.read(255)
+        read = self.ser.read(5)
         print("start: " + str(read))
         if read[0] == START_BYTE[0]:
             message = Message()
@@ -58,8 +58,8 @@ class Communication:
             message.message_type = int(read[3])
             message.length = int(read[4])
 
-            read = self.ser.read(message.length)
-            message.data += read[5:].decode('utf-8')
+            # read = self.ser.read(message.length)
+            # message.data += read[5:].decode('utf-8')
             return message.data
 
     def read_line(self):
