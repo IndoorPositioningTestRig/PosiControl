@@ -62,7 +62,7 @@ class Communication:
 
             if message.length > 0:
                 # Read the message content
-                content = self.ser.read(message.length)
+                content = self.ser.read(message.length - 5)
                 print("content: " + str(content))
                 message.data += content.decode('utf-8')
 
