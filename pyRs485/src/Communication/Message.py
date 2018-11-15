@@ -4,4 +4,4 @@ class Message:
         self.target = 0
         self.message_type = 0
         self.length = 0
-        self.data = []
+        self.data = ""
