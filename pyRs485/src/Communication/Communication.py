@@ -49,17 +49,23 @@ class Communication:
         self.ser.write(message)
 
     def read(self):
-        read = self.ser.read(5)
+        read = self.ser.read()
         print("start: " + str(read))
-        if read[0] == START_BYTE[0]:
+        if read == START_BYTE:
             message = Message()
-            message.sender = int(read[1])
-            message.target = int(read[2])
-            message.message_type = int(read[3])
-            message.length = int(read[4])
+            # Build the the header
+            header = self.ser.read(4)
+            message.sender = int(header[1])
+            message.target = int(header[2])
+            message.message_type = int(header[3])
+            message.length = int(header[4])
 
-            # read = self.ser.read(message.length)
-            # message.data += read[5:].decode('utf-8')
+            if message.length > 0:
+                # Read the message content
+                content = self.ser.read(message.length)
+                print("content: " + content)
+                message.data += content.decode('utf-8')
+
             return message.data
 
     def read_line(self):
