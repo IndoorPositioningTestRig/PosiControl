@@ -55,15 +55,15 @@ class Communication:
             message = Message()
             # Build the the header
             header = self.ser.read(4)
-            message.sender = int(header[1])
-            message.target = int(header[2])
-            message.message_type = int(header[3])
-            message.length = int(header[4])
+            message.sender = int(header[0])
+            message.target = int(header[1])
+            message.message_type = int(header[2])
+            message.length = int(header[3])
 
             if message.length > 0:
                 # Read the message content
                 content = self.ser.read(message.length)
-                print("content: " + content)
+                print("content: " + str(content))
                 message.data += content.decode('utf-8')
 
             return message.data
