@@ -52,22 +52,21 @@ class Communication:
         read = self.ser.read()
         print("read: " + str(read))
         if read == START_BYTE:
-            print("if")
             message = Message()
             read = self.ser.read(1)
-            message.sender = read
+            message.sender = int(read)
             read = self.ser.read(1)
-            message.target = read
+            message.target = int(read)
             read = self.ser.read(1)
-            message.message_type = read
+            message.message_type = int(read)
             read = self.ser.read(1)
-            message.length = read
+            message.length = int(read)
 
             index = 0
             while index < message.length:
                 read = self.ser.read()
-                message.data.append(read)
-                print("read: " + str(message.data, "utf-8"))
+                message.data.append(str(read))
+                # print("read: " + message.data)
                 index += 1
             return message.data
 
