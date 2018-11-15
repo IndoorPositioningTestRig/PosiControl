@@ -16,7 +16,7 @@ RS485_UNINITIALIZED = 2
 
 SENDER_NUM = 55
 
-START_BYTE = 0x80
+START_BYTE = b"\x80"
 
 
 class Communication:
@@ -50,23 +50,19 @@ class Communication:
 
     def read(self):
         read = self.ser.read()
-        # print("read: " + str(read))
-        if [read] == bytes([START_BYTE]):
+        print("read: " + str(read))
+        if read == START_BYTE:
+            print("if")
             message = Message()
             read = self.ser.read(1)
-            print(read)
             message.sender = read
             read = self.ser.read(1)
-            print(read)
             message.target = read
             read = self.ser.read(1)
-            print(read)
             message.message_type = read
             read = self.ser.read(1)
-            print(read)
             message.length = read
 
-            print(message)
             index = 0
             while index < message.length:
                 read = self.ser.read()
