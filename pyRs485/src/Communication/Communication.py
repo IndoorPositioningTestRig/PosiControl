@@ -59,6 +59,7 @@ class Communication:
             message.message_type = int(read[2])
             message.length = int(read[3])
             print("meta-data: " + str(read))
+            print("len: " + str(message.length))
 
             read = self.ser.read(message.length)
             message.data += read.decode('utf-8')
