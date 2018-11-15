@@ -29,9 +29,10 @@ class Communication:
             wiringpi.digitalWrite(RS485_SWITCH, RS485_READ)
 
     def write(self, data: bytes, target: int, type: int):
-        header = bytes([0x80, SENDER_NUM, target, type, len(data)])
+        length = len(data) + 5 # Add 5, because there are 5 fields in the header
+        header = bytes([0x80, SENDER_NUM, target, type, length])
         message = header + data
-        print("sending: " + str(message))
+        print("sending: " + str(message) + " len: length")
 
         if self.state is RS485_UNINITIALIZED:
             raise Exception("Not initialised")
