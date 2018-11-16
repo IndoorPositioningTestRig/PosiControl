@@ -40,14 +40,14 @@ def main():
     communication.setup()
 
     while True:
-        usr = input("$").lower()
+        usr = input("$ ").lower()
         if usr == "read":
             msg = communication.read()
             print("read: " + str(msg))
         elif usr == "write":
-            mt = int(input("type?"))
-            target = int(input("target?"))
-            msg = input("message?")
+            mt = int(input("type? "))
+            target = int(input("target? "))
+            msg = input("message? ")
             communication.write(bytes(msg, "utf-8"), target, mt)
 
 
