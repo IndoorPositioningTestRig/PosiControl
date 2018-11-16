@@ -1,6 +1,5 @@
 import sys
 from Communication.Communication import Communication
-from Communication import Communication
 
 PORT = "/dev/ttyS0"
 RS485_SWITCH = 18
@@ -34,10 +33,6 @@ def write_loop(communication: Communication, once=False):
         count += 1
         if once:
             return
-
-
-def check_type(t: int):
-    return t == Communication.TYPES.COMMAND or t == Communication.TYPES.REQUEST or t == Communication.TYPES.RESPONSE
 
 
 def main():
