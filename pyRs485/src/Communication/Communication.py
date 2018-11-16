@@ -17,7 +17,7 @@ RS485_UNINITIALIZED = 2
 SENDER_NUM = 55
 
 START_INT = 0x80
-START_BYTE = bytes(START_INT)
+START_BYTE = b"\x80"
 
 
 class Communication:
