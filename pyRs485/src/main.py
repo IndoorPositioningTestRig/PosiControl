@@ -1,5 +1,6 @@
 import sys
 from Communication.Communication import Communication
+from Communication import Communication
 
 PORT = "/dev/ttyS0"
 RS485_SWITCH = 18
@@ -35,6 +36,10 @@ def write_loop(communication: Communication, once=False):
             return
 
 
+def check_type(t: int):
+    return t == Communication.TYPES.COMMAND or t == Communication.TYPES.REQUEST or t == Communication.TYPES.RESPONSE
+
+
 def main():
     communication = Communication()
     communication.setup()
@@ -46,9 +51,14 @@ def main():
             print("read: " + str(msg))
         elif usr == "write":
             mt = int(input("type? "))
-            target = int(input("target? "))
-            msg = input("message? ")
-            communication.write(bytes(msg, "utf-8"), target, mt)
+            if not check_type(mt):
+                print("invalid type")
+            else:
+                target = int(input("target? "))
+                if target == 0:
+                    print("Broadcasting")
+                msg = input("message? ")
+                communication.write(bytes(msg, "utf-8"), target, mt)
         if usr == "exit":
             return
 
