@@ -39,18 +39,16 @@ def main():
     communication = Communication()
     communication.setup()
 
-    once = False
-    read = False
-    for arg in sys.argv:
-        if arg.lower() == "read":
-            read = True
-        elif arg.lower() == "once":
-            once = True
-
-    if read:
-        read_loop(communication, once)
-    else:
-        write_loop(communication, once)
+    while True:
+        usr = input("$").lower()
+        if usr == "read":
+            msg = communication.read()
+            print("read: " + str(msg))
+        elif usr == "write":
+            mt = int(input("type?"))
+            target = int(input("target?"))
+            msg = input("message?")
+            communication.write(bytes(msg, "utf-8"), target, mt)
 
 
 if __name__ == "__main__":

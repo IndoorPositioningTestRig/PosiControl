@@ -23,7 +23,7 @@ START_BYTE = b"\x80"
 class Communication:
     def __init__(self):
         self.state = RS485_UNINITIALIZED
-        self.ser = RS485()
+        self.ser = RS485(timeout=5000)
 
     def set_mode(self, mode=RS485_READ):
         if mode is RS485_WRITE:
