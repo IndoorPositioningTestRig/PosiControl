@@ -50,7 +50,7 @@ def main():
             msg = communication.read()
             print("read: " + str(msg))
         elif usr == "write":
-            mt = int(input("type? "))
+            # mt = int(input("type? "))
             # if not check_type(mt):
             #     print("invalid type")
             # else:
