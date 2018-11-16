@@ -16,7 +16,8 @@ RS485_UNINITIALIZED = 2
 
 SENDER_NUM = 55
 
-START_BYTE = b"\x80"
+START_INT = 0x80
+START_BYTE = bytes(START_INT)
 
 
 class Communication:
@@ -36,7 +37,7 @@ class Communication:
         # Add 5, because there are 5 fields in the header
         length = len(data) + 5
         # Build the header and message
-        header = bytes([START_BYTE, SENDER_NUM, target, message_type, length])
+        header = bytes([START_INT, SENDER_NUM, target, message_type, length])
         message = header + data
         print("sending: " + str(message) + " len: " + str(length) + " actual: " + str(len(message)))
 
