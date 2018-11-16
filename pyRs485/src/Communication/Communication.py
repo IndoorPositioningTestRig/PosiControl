@@ -49,9 +49,7 @@ class Communication:
         self.ser.write(message)
 
     def read(self):
-        read = self.ser.read(16)
-        print(read)
-        return
+        read = self.ser.read()
         if read == START_BYTE:
             message = Message()
             # Build the the header
