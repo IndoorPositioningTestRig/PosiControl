@@ -51,14 +51,14 @@ def main():
             print("read: " + str(msg))
         elif usr == "write":
             mt = int(input("type? "))
-            if not check_type(mt):
-                print("invalid type")
-            else:
-                target = int(input("target? "))
-                if target == 0:
-                    print("Broadcasting")
-                msg = input("message? ")
-                communication.write(bytes(msg, "utf-8"), target, mt)
+            # if not check_type(mt):
+            #     print("invalid type")
+            # else:
+            target = int(input("target? "))
+            if target == 0:
+                print("Broadcasting")
+            msg = input("message? ")
+            communication.write(bytes(msg, "utf-8"), target, 2)
         if usr == "exit":
             return
 

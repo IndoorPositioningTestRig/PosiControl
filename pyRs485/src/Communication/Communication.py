@@ -22,9 +22,9 @@ START_BYTE = b"\x80"
 
 
 class TYPES(Enum):
-    REQUEST = 1
-    COMMAND = 2
-    RESPONSE = 3
+    REQUEST: int = 1
+    COMMAND: int = 2
+    RESPONSE: int = 3
 
 
 class Communication:
