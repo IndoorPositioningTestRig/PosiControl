@@ -49,6 +49,8 @@ def main():
             target = int(input("target? "))
             msg = input("message? ")
             communication.write(bytes(msg, "utf-8"), target, mt)
+        if usr == "exit":
+            return
 
 
 if __name__ == "__main__":
