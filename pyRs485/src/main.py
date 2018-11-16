@@ -40,7 +40,7 @@ def main():
     communication.setup()
 
     while True:
-        usr = input("$ ").lower()
+        usr = input("\u001b[34;1m$\u001b[0m ").lower()
         if usr == "read":
             msg = communication.read()
             print("read: " + str(msg))
@@ -51,7 +51,7 @@ def main():
             # else:
             target = int(input("target? "))
             if target == 0:
-                print("Broadcasting")
+                print("\u001b[32;1mBroadcasting\u001b[0m")
             msg = input("message? ")
             communication.write(bytes(msg, "utf-8"), target, 2)
         if usr == "exit":
