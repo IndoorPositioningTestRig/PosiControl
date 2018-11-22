@@ -4,7 +4,6 @@ from serial.rs485 import RS485
 import wiringpi
 import struct
 from Communication.Message import Message
-from enum import Enum
 
 PORT = "/dev/ttyS0"
 RS485_SWITCH = 18
@@ -21,13 +20,11 @@ START_INT = 0x80
 START_BYTE = b"\x80"
 
 
-class TYPES(Enum):
+class Communication:
     REQUEST = 1
     COMMAND = 2
     RESPONSE = 3
 
-
-class Communication:
     def __init__(self):
         self.state = RS485_UNINITIALIZED
         self.ser = RS485(timeout=5000)

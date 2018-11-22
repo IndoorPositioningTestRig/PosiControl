@@ -53,7 +53,13 @@ def main():
             if target == 0:
                 print("\u001b[32;1mBroadcasting\u001b[0m")
             msg = input("message? ")
-            communication.write(bytes(msg, "utf-8"), target, 2)
+            communication.write(bytes(msg, "utf-8"), target, Communication.COMMAND)
+        elif usr == "encoder":
+            target = int(input("target? "))
+            if target == 0:
+                print("\u001b[32;1mBroadcasting\u001b[0m")
+            msg = input("message? ")
+            communication.write(bytes(msg, "utf-8"), target, Communication.COMMAND)
         if usr == "exit":
             return
 
