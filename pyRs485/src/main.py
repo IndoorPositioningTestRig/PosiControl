@@ -1,4 +1,5 @@
 import sys
+import json
 from Communication.Communication import Communication
 
 PORT = "/dev/ttyS0"
@@ -54,7 +55,13 @@ def main():
                 print("\u001b[32;1mBroadcasting\u001b[0m")
             msg = input("message? ")
             communication.write(bytes(msg, "utf-8"), target, Communication.COMMAND)
-        if usr == "exit":
+        elif usr == "json":
+            msg = json.dumps({"value": "Hello world"})
+            target = int(input("target? "))
+            if target == 0:
+                print("\u001b[32;1mBroadcasting\u001b[0m")
+            communication.write(bytes(msg, "utf-8"), target, Communication.COMMAND)
+        elif usr == "exit":
             return
 
 
