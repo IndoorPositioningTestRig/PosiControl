@@ -3,6 +3,7 @@ import serial.rs485
 from serial.rs485 import RS485
 import wiringpi
 import struct
+import json
 from Communication.Message import Message
 
 PORT = "/dev/ttyS0"
@@ -36,6 +37,10 @@ class Communication:
         else:
             self.state = RS485_READ
             wiringpi.digitalWrite(RS485_SWITCH, RS485_READ)
+
+    def write_json(self, data: dict, target: int, message_type: int):
+        data_str = json.dumps(data)
+        self.write(bytes(data_str, "utf-8"), target, message_type)
 
     def write(self, data: bytes, target: int, message_type: int):
         # Add 5, because there are 5 fields in the header
