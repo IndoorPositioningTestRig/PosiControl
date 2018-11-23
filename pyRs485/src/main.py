@@ -46,21 +46,35 @@ def main():
             msg = communication.read()
             print("read: " + str(msg))
         elif usr == "write":
-            # mt = int(input("type? "))
-            # if not check_type(mt):
-            #     print("invalid type")
-            # else:
+            msg = {}
+
             target = int(input("target? "))
             if target == 0:
                 print("\u001b[32;1mBroadcasting\u001b[0m")
-            msg = input("message? ")
-            communication.write(bytes(msg, "utf-8"), target, Communication.COMMAND)
-        elif usr == "json":
-            msg = json.dumps({"value": "Hello world"})
-            target = int(input("target? "))
-            if target == 0:
-                print("\u001b[32;1mBroadcasting\u001b[0m")
-            communication.write(bytes(msg, "utf-8"), target, Communication.COMMAND)
+
+            what = input("what? ")
+            if what == "setpoint":
+                val = int(input("value? "))
+                msg["command"] = "setPoint"
+                msg["point"] = val
+            elif what == "retract":
+                amount = int(input("Amount? "))
+                speed = int(input("Speed?"))
+                msg["command"] = "retract"
+                msg["amount"] = amount
+                msg["speed"] = speed
+            elif what == "feed":
+                amount = int(input("Amount? "))
+                speed = int(input("Speed?"))
+                msg["command"] = "feed"
+                msg["amount"] = amount
+                msg["speed"] = speed
+            elif what == "execute":
+                msg["command"] = "execute"
+            elif what == "reset encoder":
+                msg["command"] = "resetEncoder"
+
+            communication.write_json(msg, target, Communication.COMMAND)
         elif usr == "exit":
             return
 
