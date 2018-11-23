@@ -3,7 +3,7 @@ import serial.rs485
 from serial.rs485 import RS485
 import wiringpi
 import json
-from Communication.Message import Message
+from endpoints.Communication.Message import Message
 
 PORT = "/dev/ttyS0"
 RS485_SWITCH = 18

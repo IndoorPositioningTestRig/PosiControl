@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from Communication.Communication import Communication
-from Communication.Communication import validate_type
+from endpoints.Communication.Communication import Communication
+from endpoints.Communication.Communication import validate_type
 
 
 communication = Communication()
