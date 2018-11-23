@@ -52,7 +52,7 @@ def main():
             if target == 0:
                 print("\u001b[32;1mBroadcasting\u001b[0m")
 
-            what = input("what")
+            what = input("what? ")
             if what == "setpoint":
                 val = int(input("value? "))
                 msg["command"] = "setPoint"
