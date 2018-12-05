@@ -21,7 +21,7 @@ def index(request, target: int, msg_type: int):
     if not valid:
         return HttpResponse(create_response("invalid type"), status=400)
     else:
-        communication.write_json(request.body, target, msg_type)
+        communication.write(request.body, target, msg_type)
         return HttpResponse(create_response("sent!"))
 
 
