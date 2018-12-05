@@ -41,7 +41,7 @@ export default class Message extends React.Component{
       return;
     }
     const messageType = TYPE[message.messageType];
-    fetch(`${BaseUrl}/msg/${message.target}/${messageType}`, {
+    fetch(`${BaseUrl}/msg/${message.target}/${messageType}/`, {
       method: "post",
       body: message.data,
       mode: "no-cors",
