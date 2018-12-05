@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from endpoints.Communication.Communication import Communication
 from endpoints.Communication.Communication import validate_type
-
+import json
 
 communication = Communication()
 communication.setup()
@@ -12,7 +12,7 @@ def create_response(msg: str):
     res = {
         "message": msg
     }
-    return res
+    return json.dumps(res)
 
 
 @csrf_exempt
