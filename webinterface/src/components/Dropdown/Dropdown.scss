@@ -10,6 +10,11 @@
 
     &.open {
       position: absolute;
+      box-shadow: $shadow;
+      padding: {
+        top: $gutter-top;
+        bottom: $gutter-top;
+      };
     }
 
     &.closed {

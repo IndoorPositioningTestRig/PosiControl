@@ -54,47 +54,49 @@ export default class Message extends React.Component{
     return (
       <div className={"screen-message"}>
         <div className={"header"}>Send a message</div>
-        {/* Target */}
-        <div className={"field"}>
-          <div className={"name"}>target:</div>
-          <div className={"value"}>
-            <Dropdown
-              onSelected={(value) => this.handleValue("target", value)}
-              value={message.target}
-              options={[0, 1, 2, 3, 4, 5, 6, 7, 8]}
-            />
-          </div>
-        </div>
-        {/* Message type */}
-        <div className={"field"}>
-          <div className={"name"}>type:</div>
-          <div className={"value"}>
-            <Dropdown
-              onSelected={(value) => this.handleValue("messageType", value)}
-              value={message.messageType}
-              options={["command", "request", "response"]}
-            />
-          </div>
-        </div>
-        {/* Content */}
-        <div className={"field"}>
-          <div className={"name"}>data:</div>
-          <div className={"value"}>
-            <div className={"text-wrapper"}>
-              <input
-                type={"text"}
-                onChange={(e) => this.handleValue("data", e.target.value)}
-                value={message.data}
+        <div className={"body"}>
+          {/* Target */}
+          <div className={"field"}>
+            <div className={"name"}>target:</div>
+            <div className={"value"}>
+              <Dropdown
+                onSelected={(value) => this.handleValue("target", value)}
+                value={message.target}
+                options={[0, 1, 2, 3, 4, 5, 6, 7, 8]}
               />
             </div>
           </div>
-        </div>
-        {/* Confirm */}
-        <div
-          onClick={this.handleConfirmClick}
-          className={"confirm-button"}
-        >
+          {/* Message type */}
+          <div className={"field"}>
+            <div className={"name"}>type:</div>
+            <div className={"value"}>
+              <Dropdown
+                onSelected={(value) => this.handleValue("messageType", value)}
+                value={message.messageType}
+                options={["command", "request", "response"]}
+              />
+            </div>
+          </div>
+          {/* Content */}
+          <div className={"field"}>
+            <div className={"name"}>data:</div>
+            <div className={"value"}>
+              <div className={"text-wrapper"}>
+                <textarea
+                  rows={"4"}
+                  onChange={(e) => this.handleValue("data", e.target.value)}
+                  value={message.data}
+                />
+              </div>
+            </div>
+          </div>
+          {/* Confirm */}
+          <div
+            onClick={this.handleConfirmClick}
+            className={"confirm-button"}
+          >
           Send
+          </div>
         </div>
       </div>
     );

@@ -1,35 +1,55 @@
 @import "../constants/definitions";
 
 .screen-message {
-  .confirm-button {
-    min-width: 10rem;
-    padding: $gutter-top $gutter-side;
-    background-color: $raised-color;
-    cursor: pointer;
-    &:hover {
-      background-color: $hover-color;
-    }
-  }
 
   .header {
     background-color: $raised-color;
     padding: $gutter-top $gutter-side;
     font-size: 1.5rem;
+    box-shadow: 1px 1px 1px gray;
   }
 
-  .field {
-    display: flex;
+  .body{
+    box-sizing: border-box;
+    padding: $gutter-top $gutter-side;
+    background-color: $raised-color;
+    box-shadow: 1px 1px 1px gray;
 
-    .name {
-      background-color: $raised-color;
-      padding: $gutter-top $gutter-side;
-
+    max-width: 30rem;
+    margin: {
+      left: auto;
+      right: auto;
     }
 
-    .value {
-      .text-wrapper {
+    .confirm-button {
+      display: inline-block;
+
+      padding: $gutter-top $gutter-side;
+      cursor: pointer;
+      box-shadow: $shadow;
+      &:hover {
+        background-color: $hover-color;
+      }
+    }
+
+
+    .field {
+      display: flex;
+      width: 100%;
+      background-color: $raised-color;
+
+      .name {
         background-color: $raised-color;
-        height: 35px;
+        padding: $gutter-top $gutter-side;
+        min-width: 4rem;
+      }
+
+      .value {
+        min-width: 4rem;
+
+        .text-wrapper {
+          background-color: $raised-color;
+        }
       }
     }
   }

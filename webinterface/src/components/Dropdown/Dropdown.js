@@ -47,7 +47,7 @@ export default class Dropdown extends React.Component{
         </div>
         {options.map((option) =>
           <div
-            className={"option abs"}
+            className={"option"}
             key={option}
             onClick={() => this.handleSelected(option)}
           >
