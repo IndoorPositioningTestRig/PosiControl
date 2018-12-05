@@ -1,0 +1,37 @@
+@import "../../constants/definitions";
+
+.dropdown {
+  display: inline;
+
+  .wrapper {
+    background-color: white;
+
+    cursor: pointer;
+
+    &.open {
+      position: absolute;
+    }
+
+    &.closed {
+      padding: {
+        left: $gutter-side;
+        right: $gutter-side;
+        top: $gutter-top;
+        bottom: $gutter-top;
+      }
+    }
+
+    .option {
+      padding: {
+        left: $gutter-side;
+        right: $gutter-side;
+        top: $gutter-top;
+        bottom: $gutter-top;
+      }
+
+      &:hover {
+        background-color: $hover-color;
+      }
+    }
+  }
+}

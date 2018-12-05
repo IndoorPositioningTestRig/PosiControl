@@ -1,0 +1,36 @@
+@import "../constants/definitions";
+
+.screen-message {
+  .confirm-button {
+    min-width: 10rem;
+    padding: $gutter-top $gutter-side;
+    background-color: $raised-color;
+    cursor: pointer;
+    &:hover {
+      background-color: $hover-color;
+    }
+  }
+
+  .header {
+    background-color: $raised-color;
+    padding: $gutter-top $gutter-side;
+    font-size: 1.5rem;
+  }
+
+  .field {
+    display: flex;
+
+    .name {
+      background-color: $raised-color;
+      padding: $gutter-top $gutter-side;
+
+    }
+
+    .value {
+      .text-wrapper {
+        background-color: $raised-color;
+        height: 35px;
+      }
+    }
+  }
+}
