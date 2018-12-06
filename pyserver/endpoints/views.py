@@ -5,7 +5,8 @@ from endpoints.Communication.Communication import validate_type
 import json
 
 communication = Communication()
-communication.setup()
+if not communication.setup():
+    print("failed to setup rs485 communication")
 
 
 def create_response(msg: str):

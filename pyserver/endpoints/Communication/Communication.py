@@ -55,7 +55,7 @@ class Communication:
             len(message)))
 
         if self.state is RS485_UNINITIALIZED:
-            raise Exception("Not initialised")
+            raise Exception("rs485 communication Not initialised")
 
         if self.state is not RS485_WRITE:
             self.set_mode(RS485_WRITE)
@@ -82,7 +82,7 @@ class Communication:
 
     def read_line(self):
         if self.state is RS485_UNINITIALIZED:
-            raise Exception("Not initialised")
+            raise Exception("rs485 communication Not initialised")
 
         if self.state is not RS485_READ:
             self.set_mode(RS485_READ)
