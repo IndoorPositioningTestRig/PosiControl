@@ -1,4 +1,4 @@
-from Communication.Message import Message
+from endpoints.Communication.Message import Message
 import struct
 from typing import List
 

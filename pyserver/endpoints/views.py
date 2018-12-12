@@ -27,8 +27,17 @@ def index(request, target: int, msg_type: int):
 
 
 @csrf_exempt
-def read(request):
-    res = communication.read()
-    json_res = json.dumps([ob.__dict__ for ob in res])
+def request_debug(request, target: int):
+    req_dict = {
+        "command":"debug"
+    }
 
-    return HttpResponse(json_res)
+    communication.write(json.dumps(req_dict), target, Communication.REQUEST)
+    read = communication.read()
+    if type(read) is int:
+        return HttpResponse(create_response("failed with code: " + str(read)))
+
+    json_res = json.dumps([ob.__dict__ for ob in read])
+
+    return HttpResponse(read)
+

@@ -80,6 +80,7 @@ class Communication:
                 # message.data += content.decode('utf-8')
 
             return DebugDecoder.decode(message)
+        return -1
 
     def read_line(self):
         if self.state is RS485_UNINITIALIZED:

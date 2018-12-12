@@ -4,5 +4,5 @@ from . import views
 
 urlpatterns = [
     path('msg/<int:target>/<int:msg_type>/', views.index, name='index'),
-    path('read/', views.read)
+    path('debug/<int:target>/', views.request_debug, name='debug')
 ]
