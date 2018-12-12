@@ -3,6 +3,7 @@ import Dropdown from "../components/Dropdown/Dropdown";
 import "./Message.scss";
 import {TYPE} from "../constants/Message";
 import {BaseUrl} from "../constants/Api";
+import Receiver from "../components/Receiver/Receiver"; 
 
 // target
 // message_type
@@ -96,6 +97,10 @@ export default class Message extends React.Component{
             className={"confirm-button"}
           >
           Send
+          </div>
+          {/* receive */}
+          <Receiver />
+          <div>
           </div>
         </div>
       </div>
