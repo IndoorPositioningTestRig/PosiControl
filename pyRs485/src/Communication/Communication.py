@@ -53,12 +53,11 @@ class Communication:
         if self.state is RS485_UNINITIALIZED:
             raise Exception("Not initialised")
 
-        if self.state is not RS485_WRITE:
-            self.set_mode(RS485_WRITE)
-
+        self.set_mode(RS485_WRITE)
         self.ser.write(message)
 
     def read(self):
+        self.set_mode(RS485_READ)
         read = self.ser.read()
         if read == START_BYTE:
             message = Message()
@@ -68,13 +67,20 @@ class Communication:
             message.target = int(header[1])
             message.message_type = int(header[2])
             message.length = int(header[3])
+            print("read message! ")
+            message.print()
 
             if message.length > 0:
                 # Read the message content
                 content = self.ser.read(message.length - 5)
                 message.data += content.decode('utf-8')
 
+            print("done reading message!")
             return message.data
+
+    def read_loop(self):
+        read = self.ser.read()
+        self.set_mode()
 
     def read_line(self):
         if self.state is RS485_UNINITIALIZED:

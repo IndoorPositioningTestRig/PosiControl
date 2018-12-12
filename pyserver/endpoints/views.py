@@ -26,6 +26,9 @@ def index(request, target: int, msg_type: int):
         return HttpResponse(create_response("sent!"))
 
 
+@csrf_exempt
 def read(request):
     res = communication.read()
-    return HttpResponse(res)
+    json_res = json.dumps([ob.__dict__ for ob in res])
+
+    return HttpResponse(json_res)
