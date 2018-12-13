@@ -21,6 +21,8 @@ SENDER_NUM = 55
 START_INT = 0x80
 START_BYTE = b"\x80"
 
+SERIAL_TIMEOUT = 5
+
 
 def validate_type(msg_type: int):
     return 0 < msg_type < 4
@@ -33,7 +35,7 @@ class Communication:
 
     def __init__(self):
         self.state = RS485_UNINITIALIZED
-        self.ser = RS485(timeout=5000)
+        self.ser = RS485()
 
     def set_mode(self, mode=RS485_READ):
         if mode is RS485_WRITE:
@@ -77,24 +79,31 @@ class Communication:
     def read(self) -> Optional[Message]:
         print('reading')
         self.set_mode(RS485_READ)
-        bytes_read = self.ser.read()
+        self.ser.timeout = SERIAL_TIMEOUT
+        while True:
+            bytes_read = self.ser.read()
+            if bytes_read == START_BYTE:
+                break
+            elif bytes_read == b'':
+                print("Failed to read!")
+                return None
+            else:
+                print('junk:', str(bytes_read))
+
         print('read', bytes_read)
-        if bytes_read == START_BYTE:
-            message = Message()
-            # Build the the header
-            header = self.ser.read(4)
-            message.sender = int(header[0])
-            message.target = int(header[1])
-            message.message_type = int(header[2])
-            message.length = int(header[3])
-            print('reading message with len: ' + str(message.length))
+        message = Message()
+        # Build the the header
+        header = self.ser.read(4)
+        message.sender = int(header[0])
+        message.target = int(header[1])
+        message.message_type = int(header[2])
+        message.length = int(header[3])
+        print('reading message with len: ' + str(message.length))
 
-            if message.length > 0:
-                message.data = self.ser.read(message.length - 5)
-            return message
+        if message.length > 0:
+            message.data = self.ser.read(message.length - 5)
+        return message
 
-        print("Failed to read!")
-        return None
 
     def read_line(self):
         if self.state is RS485_UNINITIALIZED:
