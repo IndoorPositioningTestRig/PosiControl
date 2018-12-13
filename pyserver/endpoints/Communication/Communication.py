@@ -4,6 +4,7 @@ from serial.rs485 import RS485
 import wiringpi
 import json
 from endpoints.Communication.Message import Message
+from endpoints.Communication import DebugDecoder
 
 PORT = "/dev/ttyS0"
 RS485_SWITCH = 18
@@ -55,7 +56,7 @@ class Communication:
             len(message)))
 
         if self.state is RS485_UNINITIALIZED:
-            raise Exception("Not initialised")
+            raise Exception("rs485 communication Not initialised")
 
         if self.state is not RS485_WRITE:
             self.set_mode(RS485_WRITE)
@@ -75,14 +76,15 @@ class Communication:
 
             if message.length > 0:
                 # Read the message content
-                content = self.ser.read(message.length - 5)
-                message.data += content.decode('utf-8')
+                message.data = self.ser.read(message.length - 5)
+                # message.data += content.decode('utf-8')
 
-            return message.data
+            return DebugDecoder.decode(message)
+        return -1
 
     def read_line(self):
         if self.state is RS485_UNINITIALIZED:
-            raise Exception("Not initialised")
+            raise Exception("rs485 communication Not initialised")
 
         if self.state is not RS485_READ:
             self.set_mode(RS485_READ)

@@ -5,7 +5,8 @@ from endpoints.Communication.Communication import validate_type
 import json
 
 communication = Communication()
-communication.setup()
+if not communication.setup():
+    print("failed to setup rs485 communication")
 
 
 def create_response(msg: str):
@@ -25,6 +26,18 @@ def index(request, target: int, msg_type: int):
         return HttpResponse(create_response("sent!"))
 
 
-def read(request):
-    res = communication.read()
-    return HttpResponse(res)
+@csrf_exempt
+def request_debug(request, target: int):
+    req_dict = {
+        "command":"debug"
+    }
+
+    communication.write(json.dumps(req_dict), target, Communication.REQUEST)
+    read = communication.read()
+    if type(read) is int:
+        return HttpResponse(create_response("failed with code: " + str(read)))
+
+    json_res = json.dumps([ob.__dict__ for ob in read])
+
+    return HttpResponse(read)
+

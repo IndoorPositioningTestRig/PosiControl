@@ -99,7 +99,7 @@ export default class Message extends React.Component{
           Send
           </div>
           {/* receive */}
-          <Receiver />
+          <Receiver target={this.state.target}/>
           <div>
           </div>
         </div>

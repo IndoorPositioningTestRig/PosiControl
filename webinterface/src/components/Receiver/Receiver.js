@@ -15,8 +15,12 @@ export default class Receiver extends React.Component{
   }
 
   handleClick() {
-    console.log('click')
-    fetch(`${BaseUrl}/read/`, {
+    if (this.props.target === null || this.props.target === undefined) {
+      alert("target is not set!");
+      return;
+    }
+
+    fetch(`${BaseUrl}/debug/${this.props.target}/`, {
       method: "get",
       mode: "no-cors",
     }).then((response) => {
