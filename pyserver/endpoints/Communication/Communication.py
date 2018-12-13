@@ -5,6 +5,7 @@ import wiringpi
 import json
 from endpoints.Communication.Message import Message
 from endpoints.Communication import DebugDecoder
+from typing import Optional, List
 
 PORT = "/dev/ttyS0"
 RS485_SWITCH = 18
@@ -63,7 +64,17 @@ class Communication:
 
         self.ser.write(message)
 
-    def read(self):
+    def read_data_points(self) -> List[DebugDecoder.DataPoint]:
+        print('decoding...')
+        message = self.read()
+        if message is None:
+            return []
+
+        decoded = DebugDecoder.decode_int16(message)
+        print('done!')
+        return decoded
+
+    def read(self) -> Optional[Message]:
         print('reading')
         self.set_mode(RS485_READ)
         bytes_read = self.ser.read()
@@ -79,15 +90,11 @@ class Communication:
             print('reading message with len: ' + str(message.length))
 
             if message.length > 0:
-                # Read the message content
                 message.data = self.ser.read(message.length - 5)
-                # message.data += content.decode('utf-8')
+            return message
 
-            print('decoding...')
-            decoded = DebugDecoder.decode_int16(message)
-            print('done!')
-            return decoded
-        return -1
+        print("Failed to read!")
+        return None
 
     def read_line(self):
         if self.state is RS485_UNINITIALIZED:

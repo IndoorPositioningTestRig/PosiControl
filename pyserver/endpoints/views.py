@@ -29,11 +29,11 @@ def index(request, target: int, msg_type: int):
 @csrf_exempt
 def request_debug(request, target: int):
     req_dict = {
-        "command":"debug"
+        "command": "debug"
     }
 
     communication.write_json(req_dict, target, Communication.REQUEST)
-    read = communication.read()
+    read = communication.read_data_points()
     if type(read) is int:
         return HttpResponse(create_response("failed with code: " + str(read)))
 
@@ -41,3 +41,24 @@ def request_debug(request, target: int):
     res = HttpResponse(json_res)
     res["access-control-allow-origin"] = "*"
     return res
+
+
+@csrf_exempt
+def set_point_debug(request, target: int, set_point: int):
+    # Build and send request
+    req_dict = {
+        "command": "setPoint_debug",
+        "setpoint": set_point
+    }
+    communication.write_json(req_dict, target, Communication.REQUEST)
+
+    # Await response
+    read = communication.read_data_points()
+    if type(read) is int:
+        return HttpResponse(create_response("failed with code: " + str(read)))
+
+    json_res = json.dumps([ob.to_dict() for ob in read])
+    res = HttpResponse(json_res)
+    res["access-control-allow-origin"] = "*"
+    return res
+

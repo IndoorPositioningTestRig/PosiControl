@@ -41,7 +41,6 @@ def decode_int16(message: Message) -> List[DataPoint]:
     data_list = []
     datapoint = DataPoint()
     for num in struct.iter_unpack('<h', message.data):
-        print(num[0])
         if datapoint.add(num[0]):
             data_list.append(datapoint)
             datapoint = DataPoint()
