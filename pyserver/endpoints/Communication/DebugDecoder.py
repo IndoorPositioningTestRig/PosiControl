@@ -4,21 +4,46 @@ from typing import List
 
 
 class DataPoint:
-    def __init__(self, setpoint: int, output: int, encoder: int):
+    def __init__(self, setpoint: int=0, output: int=0, encoder: int=0, time: int =0):
         self.setpoint = setpoint
         self.output = output
         self.encoder = encoder
+        self.time = time
+        self.index = 0
 
     def to_string(self):
         return "setpoint: {}, output: {}, encoder: {}"\
             .format(self.setpoint, self.output, self.encoder)
 
+    def add(self, num: int):
+        if self.index == 0:
+            self.setpoint = num
+        elif self.index == 1:
+            self.output = num
+        elif self.index == 2:
+            self.encoder = num
+        else:
+            self.time = num
 
-def decode(message: Message) -> List[DataPoint]:
-    data: tuple = struct.unpack("<H", message.data)
+        self.index += 1
+        return self.index > 3
+
+    def to_dict(self):
+        return {
+            "setpoint": self.setpoint,
+            "output": self.output,
+            "encoder": self.encoder,
+            "time": self.time
+        }
+
+
+def decode_int16(message: Message) -> List[DataPoint]:
     data_list = []
-    for i in range(0, len(data), 3):
-        datapoint = DataPoint(data[i], data[i+1], data[i+2])
-        data_list.append(datapoint)
-        print(datapoint.to_string())
+    datapoint = DataPoint()
+    for num in struct.iter_unpack('<h', message.data):
+        print(num[0])
+        if datapoint.add(num[0]):
+            data_list.append(datapoint)
+            datapoint = DataPoint()
+
     return data_list

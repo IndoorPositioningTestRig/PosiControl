@@ -3,11 +3,8 @@ import Dropdown from "../components/Dropdown/Dropdown";
 import "./Message.scss";
 import {TYPE} from "../constants/Message";
 import {BaseUrl} from "../constants/Api";
-import Receiver from "../components/Receiver/Receiver"; 
+import Receiver from "../components/Receiver/Receiver";
 
-// target
-// message_type
-// data
 
 export default class Message extends React.Component{
   constructor(props) {
@@ -99,9 +96,7 @@ export default class Message extends React.Component{
           Send
           </div>
           {/* receive */}
-          <Receiver target={this.state.target}/>
-          <div>
-          </div>
+          <Receiver target={this.state.message.target}/>
         </div>
       </div>
     );

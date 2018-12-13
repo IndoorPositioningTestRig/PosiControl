@@ -64,8 +64,11 @@ class Communication:
         self.ser.write(message)
 
     def read(self):
-        read = self.ser.read()
-        if read == START_BYTE:
+        print('reading')
+        self.set_mode(RS485_READ)
+        bytes_read = self.ser.read()
+        print('read', bytes_read)
+        if bytes_read == START_BYTE:
             message = Message()
             # Build the the header
             header = self.ser.read(4)
@@ -73,13 +76,17 @@ class Communication:
             message.target = int(header[1])
             message.message_type = int(header[2])
             message.length = int(header[3])
+            print('reading message with len: ' + str(message.length))
 
             if message.length > 0:
                 # Read the message content
                 message.data = self.ser.read(message.length - 5)
                 # message.data += content.decode('utf-8')
 
-            return DebugDecoder.decode(message)
+            print('decoding...')
+            decoded = DebugDecoder.decode_int16(message)
+            print('done!')
+            return decoded
         return -1
 
     def read_line(self):

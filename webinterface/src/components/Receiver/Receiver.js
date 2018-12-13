@@ -1,6 +1,7 @@
-import React from 'react';
+import React from "react";
 import "./Receiver.scss";
 import {BaseUrl} from "../../constants/Api";
+import DataPlotter, {dummyData} from "../DataPlotter/DataPlotter";
 
 
 export default class Receiver extends React.Component{
@@ -8,8 +9,8 @@ export default class Receiver extends React.Component{
     super(props);
 
     this.state = {
-      data: "",
-    }
+      data: [],
+    };
 
     this.handleClick = this.handleClick.bind(this);
   }
@@ -20,23 +21,35 @@ export default class Receiver extends React.Component{
       return;
     }
 
+    // this.setState({data: dummyData(50)});
+
     fetch(`${BaseUrl}/debug/${this.props.target}/`, {
       method: "get",
-      mode: "no-cors",
     }).then((response) => {
-        console.log(response);
-        response.json().then(data => {
-          this.setState({data});
-        });
+      response.json().then(data => {
+        console.log('response', data);
+        this.setState({data: data});
+      })
     });
   }
 
   render() {
+    console.log(this.props);
+
     return (
       <div>
         <button onClick={this.handleClick}>Click me</button>
-        <textarea value={this.state.data}></textarea>
+        <div>
+          red: setpoint
+        </div>
+        <div>
+          blue: output
+        </div>
+        <div>
+          green: encoder
+        </div>
+        <DataPlotter data={this.state.data}/>
       </div>
-    )
+    );
   }
 }
