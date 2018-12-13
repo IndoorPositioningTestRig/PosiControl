@@ -1,0 +1,59 @@
+@import "../constants/definitions";
+
+.setpoint-screen {
+  background-color: $raised-color;
+  display: flex;
+
+
+  .left {
+    .fields {
+      display: flex;
+      flex-direction: column;
+
+      .field {
+        float: left;
+        display: flex;
+
+        .name {
+          background-color: $raised-color;
+          padding: $gutter-top $gutter-side;
+          min-width: 4rem;
+        }
+
+        .value {
+          min-width: 4rem;
+
+          .setpoint-input {
+            margin-top: $gutter-top;
+
+            &.warning {
+              color: orangered;
+            }
+          }
+        }
+      }
+    }
+
+    .confirm-button {
+      margin: {
+        top: $gutter-top;
+        left: $gutter-side;
+      }
+      box-sizing: border-box;
+      display: inline-block;
+      flex: none;
+
+      width: auto;
+      padding: $gutter-top $gutter-side;
+      cursor: pointer;
+      box-shadow: $shadow;
+      &:hover {
+        background-color: $hover-color;
+      }
+    }
+  }
+
+  .right {
+    min-width: 700px;
+  }
+}

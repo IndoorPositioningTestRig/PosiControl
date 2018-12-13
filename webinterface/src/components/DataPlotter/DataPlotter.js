@@ -40,7 +40,7 @@ export default class DataPlotter extends React.Component {
           grid
           lineColors={["red", "blue", "green"]}
           verticalGrid
-          width={400}
+          width={600}
           height={400}
           margin={{top: 10, right: 30, bottom: 50, left: 70}}
           axisLabels={{x: "time in millis", y: "values"}}
