@@ -25,6 +25,7 @@ def create_response(raw, status=200):
 
     http_res = HttpResponse(res_string, status=status)
     http_res["access-control-allow-origin"] = "*"
+    return http_res
 
 
 @csrf_exempt
@@ -37,6 +38,7 @@ def set_pid(request, target: int, p: float, i: float, d: float):
         "d": d
     }
     communication.write_json(req_dict, target, Communication.COMMAND)
+    return create_response_message("Done")
 
 
 @csrf_exempt
