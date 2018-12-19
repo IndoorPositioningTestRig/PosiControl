@@ -17,7 +17,8 @@ def create_response(msg: str):
 
 
 @csrf_exempt
-def index(request, target: int, msg_type: int):
+def message(request, target: int, msg_type: int):
+    """ Send an arbitrary message """
     valid = validate_type(msg_type)
     if not valid:
         return HttpResponse(create_response("invalid type"), status=400)
@@ -28,6 +29,7 @@ def index(request, target: int, msg_type: int):
 
 @csrf_exempt
 def request_debug(request, target: int):
+    """ Request stored debug data """
     req_dict = {
         "command": "debug"
     }
@@ -45,7 +47,7 @@ def request_debug(request, target: int):
 
 @csrf_exempt
 def set_point_debug(request, target: int, set_point: int):
-    # Build and send request
+    """ Move to given setPoint and send debug data when done"""
     req_dict = {
         "command": "setPoint_debug",
         "setpoint": set_point

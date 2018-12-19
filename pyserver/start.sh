@@ -1,4 +1,4 @@
 #!/bin/bash
 
 echo Starting python server...
-python3.6 ./manage.py runserver 0.0.0.0:8000
+python3.7 ./manage.py runserver 0.0.0.0:8000

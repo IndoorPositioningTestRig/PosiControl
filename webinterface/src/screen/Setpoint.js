@@ -34,11 +34,10 @@ export default class extends React.Component {
 
     const res = await fetch(
       `${BaseUrl}/setPoint/${target}/${Number.parseInt(setPoint)}/`, {
-        method: "post",
-        mode: "no-cors",
+        method: "get"
       });
-    const data = await res.json();
-    this.setState({data});
+    const data = await res.text();
+    this.setState({data: JSON.parse(data)});
   }
 
   handleSetPointChange(e) {

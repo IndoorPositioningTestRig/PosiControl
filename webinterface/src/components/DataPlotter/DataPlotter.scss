@@ -1,0 +1,23 @@
+@import "../../constants/definitions";
+
+.data-plotter {
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: $small-break) {
+    margin-top: 1rem;
+  }
+
+  .legend-item {
+    display: flex;
+    margin-left: 10px;
+
+    .legend-icon {
+      margin-top: 0.25rem;
+      margin-right: 1rem;
+      height: 0.75rem;
+      width: 0.75rem;
+      border-radius: 0.2rem;
+    }
+  }
+}

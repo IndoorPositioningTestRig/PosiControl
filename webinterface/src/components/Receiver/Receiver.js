@@ -27,27 +27,15 @@ export default class Receiver extends React.Component{
       method: "get",
     }).then((response) => {
       response.json().then(data => {
-        console.log('response', data);
         this.setState({data: data});
       })
     });
   }
 
   render() {
-    console.log(this.props);
-
     return (
       <div>
         <button onClick={this.handleClick}>Click me</button>
-        <div>
-          red: setpoint
-        </div>
-        <div>
-          blue: output
-        </div>
-        <div>
-          green: encoder
-        </div>
         <DataPlotter data={this.state.data}/>
       </div>
     );

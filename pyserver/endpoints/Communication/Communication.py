@@ -88,9 +88,10 @@ class Communication:
                 print("Failed to read!")
                 return None
             else:
-                print('junk:', str(bytes_read))
+                print('read junk:', str(bytes_read))
 
-        print('read', bytes_read)
+        print('read', len(bytes_read))
+        print(bytes_read)
         message = Message()
         # Build the the header
         header = self.ser.read(4)

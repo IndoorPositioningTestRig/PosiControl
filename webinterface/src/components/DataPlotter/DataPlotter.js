@@ -1,5 +1,6 @@
 import React from "react";
 import {LineChart} from "react-easy-chart";
+import "./DataPlotter.scss";
 
 export function dummyData(len=12) {
   const data = [];
@@ -29,21 +30,62 @@ function fromDatapoints(datapoints) {
 }
 
 export default class DataPlotter extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      width: window.innerWidth,
+    };
+
+    this.handleResize = this.handleResize.bind(this);
+  }
+
+  handleResize() {
+    this.setState({
+      width: window.innerWidth,
+    });
+  }
+
+  componentDidMount() {
+    window.addEventListener("resize", this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.handleResize);
+  }
+
   render() {
     const {data} = this.props;
     const graphData = fromDatapoints(data || []);
+    let chartWidth = 600;
+    if (this.state.width < 900) {
+      chartWidth = this.state.width - 20;
+    }
 
     return (
-      <div>
+      <div className={"data-plotter"}>
+        <div>
+          <div className={"legend-item"}>
+            <div style={{backgroundColor: "red"}} className={"legend-icon"}/>
+            setpoint
+          </div>
+          <div className={"legend-item"}>
+            <div style={{backgroundColor: "blue"}} className={"legend-icon"}/>
+            output
+          </div>
+          <div className={"legend-item"}>
+            <div style={{backgroundColor: "green"}} className={"legend-icon"}/>
+              encoder
+          </div>
+        </div>
         <LineChart
-          legend
+          margin={{top: 10, right: 10, bottom: 10, left: 10}}
           grid
           lineColors={["red", "blue", "green"]}
           verticalGrid
-          width={600}
+          width={chartWidth}
           height={400}
-          margin={{top: 10, right: 30, bottom: 50, left: 70}}
-          axisLabels={{x: "time in millis", y: "values"}}
+          // axisLabels={{x: "time in millis", y: "values"}}
           axes
           data={graphData}
         />

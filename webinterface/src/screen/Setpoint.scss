@@ -3,6 +3,12 @@
 .setpoint-screen {
   background-color: $raised-color;
   display: flex;
+  padding: 10px;
+  box-sizing: border-box;
+
+  @media (max-width: $small-break) {
+    flex-direction: column;
+  }
 
 
   .left {
@@ -21,9 +27,10 @@
         }
 
         .value {
-          min-width: 4rem;
+          min-width: 3rem;
 
           .setpoint-input {
+            width: 5rem;
             margin-top: $gutter-top;
 
             &.warning {
@@ -53,7 +60,4 @@
     }
   }
 
-  .right {
-    min-width: 700px;
-  }
 }
