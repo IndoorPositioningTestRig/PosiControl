@@ -1,0 +1,38 @@
+@import "../constants/definitions";
+
+.pid-screen {
+  margin: {
+    left: $gutter-side;
+    right: $gutter-side;
+  }
+
+
+  .pid-input {
+    .field {
+      height: 2.5rem;
+      display: flex;
+
+      .name {
+        width: 3rem;
+      }
+    }
+
+  }
+
+  .confirm-button {
+    margin: {
+      top: $gutter-top;
+    }
+    box-sizing: border-box;
+    display: inline-block;
+    flex: none;
+
+    width: auto;
+    padding: $gutter-top $gutter-side;
+    cursor: pointer;
+    box-shadow: $shadow;
+    &:hover {
+      background-color: $hover-color;
+    }
+  }
+}

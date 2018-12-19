@@ -2,12 +2,20 @@ import React from "react";
 import "./App.scss";
 import Message from "./screen/Message";
 import Setpoint from "./screen/Setpoint";
+import {Switch, Route} from "react-router-dom";
+
+import TopBar from "./components/TopBar/TopBar";
 
 class App extends React.Component {
   render() {
+
     return (
       <div className="App">
-        <Setpoint/>
+        <TopBar />
+        <Switch>
+          <Route path={"/message"} component={Message}/>
+          <Route path={"/"} component={Setpoint}/>
+        </Switch>
       </div>
     );
   }

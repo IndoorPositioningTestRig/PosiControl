@@ -3,6 +3,7 @@ import "./Setpoint.scss";
 import DataPlotter from "../components/DataPlotter/DataPlotter";
 import Dropdown from "../components/Dropdown/Dropdown";
 import {BaseUrl} from "../constants/Api";
+import Pid from "./Pid";
 
 export default class extends React.Component {
   constructor(props) {
@@ -47,6 +48,14 @@ export default class extends React.Component {
     this.setState({setPoint, setPointWarning});
   }
 
+  async fetchPid() {
+    const res = await fetch(`${BaseUrl}/pid/${this.state.target}`, {
+      method: "get",
+    });
+    const json = await res.json();
+    return json;
+  }
+
   render() {
     const {data, target, setPoint, setPointWarning} = this.state;
 
@@ -88,6 +97,11 @@ export default class extends React.Component {
         </div>
         <div className={"right"}>
           <DataPlotter data={data}/>
+        </div>
+        <div>
+          <Pid
+            target={this.state.target}
+          />
         </div>
       </div>
     );

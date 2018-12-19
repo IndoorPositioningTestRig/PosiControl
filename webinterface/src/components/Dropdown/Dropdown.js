@@ -1,8 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import "./Dropdown.scss";
+import enhanceWithClickOutside from "react-click-outside"
 
-export default class Dropdown extends React.Component{
+class Dropdown extends React.Component{
   constructor(props) {
     super(props);
 
@@ -20,6 +21,10 @@ export default class Dropdown extends React.Component{
 
   handleSelected(selected) {
     this.props.onSelected(selected);
+    this.setState({open: false});
+  }
+
+  handleClickOutside() {
     this.setState({open: false});
   }
 
@@ -69,6 +74,8 @@ export default class Dropdown extends React.Component{
     );
   }
 }
+
+export default enhanceWithClickOutside(Dropdown);
 
 Dropdown.propTypes = {
   options: PropTypes.array.isRequired,

@@ -1,0 +1,54 @@
+@import "../../constants/definitions";
+
+.top-bar {
+  background-color: white;
+  height: 2rem;
+  box-shadow: $shadow;
+  box-sizing: border-box;
+
+  .menu-button {
+    width: 1.75rem;
+    height: 1.25rem;
+    position: absolute;
+
+    margin: {
+      top: 0.375rem;
+      left: 1rem;
+    }
+    cursor: pointer;
+
+    .icon {
+      height: 100%;
+      width: 100%;
+    }
+
+    .menu {
+      cursor: pointer;
+      left: 1rem;
+      box-shadow: $shadow;
+      display: flex;
+      flex-direction: column;
+      background-color: white;
+      padding: {
+        top: $gutter-top;
+        bottom: $gutter-top;
+      };
+      position: absolute;
+
+      .option {
+        padding: {
+          left: $gutter-side;
+          right: $gutter-side;
+          top: $gutter-top;
+          bottom: $gutter-top;
+        };
+
+        &:hover {
+          background-color: $hover-color;
+        }
+      }
+    }
+  }
+}
+
+

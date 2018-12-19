@@ -1,6 +1,7 @@
 @import "../constants/definitions";
 
 .screen-message {
+  width: 100%;
 
   .header {
     background-color: $raised-color;
@@ -14,8 +15,8 @@
     padding: $gutter-top $gutter-side;
     background-color: $raised-color;
     box-shadow: 1px 1px 1px gray;
+    width: 100%;
 
-    max-width: 30rem;
     margin: {
       left: auto;
       right: auto;
