@@ -91,7 +91,7 @@ def read_debug(req_dict: dict, target: int):
         return create_response_message("failed with code: " + str(read), status=500)
 
     json_res = json.dumps([ob.to_dict() for ob in read])
-    return create_response_message(json_res)
+    return create_response(json_res)
 
 
 @csrf_exempt

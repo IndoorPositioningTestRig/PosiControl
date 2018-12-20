@@ -57,6 +57,7 @@ export default class DataPlotter extends React.Component {
   render() {
     const {data} = this.props;
     const graphData = fromDatapoints(data || []);
+    console.log("graphdata", graphData);
     let chartWidth = 600;
     if (this.state.width < 900) {
       chartWidth = this.state.width - 20;
@@ -79,14 +80,16 @@ export default class DataPlotter extends React.Component {
           </div>
         </div>
         <LineChart
-          margin={{top: 10, right: 10, bottom: 10, left: 10}}
+          axes={true}
+          margin={{top: 10, right: 10, bottom: 50, left: 50}}
+          // margin={{top: 10, right: 10, bottom: 10, left: 10}}
           grid
           lineColors={["red", "blue", "green"]}
           verticalGrid
           width={chartWidth}
           height={400}
+
           // axisLabels={{x: "time in millis", y: "values"}}
-          axes
           data={graphData}
         />
       </div>

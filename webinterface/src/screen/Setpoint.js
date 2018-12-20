@@ -38,11 +38,9 @@ export default class extends React.Component {
         method: "get"
       });
     const jsondata = await res.text();
+    console.log('gotjson', jsondata);
     const data = JSON.parse(jsondata);
-    if (data.hasOwnProperty("message")) {
-      return;
-    }
-
+    console.log('gotdata', data);
     this.setState({data});
   }
 
