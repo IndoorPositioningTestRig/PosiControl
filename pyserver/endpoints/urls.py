@@ -46,5 +46,9 @@ urlpatterns = [
     path('setPoint/<int:target>/<negint:set_point>/',
          views.set_point_debug,
          name='set_point'
+         ),
+    path('ping/<int:target>/',
+         views.ping,
+         name='ping'
          )
 ]

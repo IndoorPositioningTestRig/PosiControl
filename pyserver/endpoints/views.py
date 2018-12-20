@@ -48,11 +48,27 @@ def get_pid(request, target: int):
         "command": "get_pid"
     }
     communication.write_json(req_dict, target, Communication.REQUEST)
-    read = communication.read()
+    communication.flush()
+    read = communication.read_pid()
     if read is None:
         return create_response_message("Failed to read", 500)
 
-    return create_response_message(str(read.data))
+    return create_response(read)
+
+
+@csrf_exempt
+def ping(request, target: int):
+    """ Send a ping and wait for a result """
+    req_dict = {
+        "command": "ping"
+    }
+    communication.write_json(req_dict, target, Communication.REQUEST)
+    communication.flush()
+    res = communication.read_str()
+    if res is None:
+        return create_response_message("failed to read", status=500)
+    else:
+        return create_response(res)
 
 
 @csrf_exempt
@@ -69,6 +85,7 @@ def message(request, target: int, msg_type: int):
 def read_debug(req_dict: dict, target: int):
     """ Send a command then listen for debug data """
     communication.write_json(req_dict, target, Communication.REQUEST)
+    communication.flush()
     read = communication.read_data_points()
     if type(read) is int:
         return create_response_message("failed with code: " + str(read), status=500)

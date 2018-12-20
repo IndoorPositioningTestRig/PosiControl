@@ -37,8 +37,13 @@ export default class extends React.Component {
       `${BaseUrl}/setPoint/${target}/${Number.parseInt(setPoint)}/`, {
         method: "get"
       });
-    const data = await res.text();
-    this.setState({data: JSON.parse(data)});
+    const jsondata = await res.text();
+    const data = JSON.parse(jsondata);
+    if (data.hasOwnProperty("message")) {
+      return;
+    }
+
+    this.setState({data});
   }
 
   handleSetPointChange(e) {

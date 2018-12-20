@@ -6,6 +6,7 @@ import json
 from endpoints.Communication.Message import Message
 from endpoints.Communication import DebugDecoder
 from typing import Optional, List
+from endpoints.Communication import PidDecoder
 
 PORT = "/dev/ttyS0"
 RS485_SWITCH = 18
@@ -45,6 +46,9 @@ class Communication:
             self.state = RS485_READ
             wiringpi.digitalWrite(RS485_SWITCH, RS485_READ)
 
+    def flush(self):
+        self.ser.flush()
+
     def write_json(self, data: dict, target: int, message_type: int):
         data_str = json.dumps(data)
         self.write(bytes(data_str, "utf-8"), target, message_type)
@@ -66,7 +70,15 @@ class Communication:
 
         self.ser.write(message)
 
+    def read_pid(self) -> Optional[dict]:
+        """ Read P I D values in the form of a dict """
+        msg = self.read()
+        if msg is None:
+            return None
+        return PidDecoder.decode_float(msg)
+
     def read_data_points(self) -> List[DebugDecoder.DataPoint]:
+        """ Read dataPoints stored on an Arduino """
         print('decoding...')
         message = self.read()
         if message is None:
@@ -76,7 +88,18 @@ class Communication:
         print('done!')
         return decoded
 
+    def read_str(self) -> Optional[str]:
+        """ Read any string """
+        message = self.read()
+        if message is None:
+            return None
+
+        res_str = message.data.decode("utf-8")
+        print('received str', res_str)
+        return res_str
+
     def read(self) -> Optional[Message]:
+        """ Read a raw message """
         print('reading')
         self.set_mode(RS485_READ)
         self.ser.timeout = SERIAL_TIMEOUT
@@ -105,8 +128,8 @@ class Communication:
             message.data = self.ser.read(message.length - 5)
         return message
 
-
     def read_line(self):
+        """ Read a line of text """
         if self.state is RS485_UNINITIALIZED:
             raise Exception("rs485 communication Not initialised")
 
