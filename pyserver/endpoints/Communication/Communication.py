@@ -8,6 +8,15 @@ from endpoints.Communication import DebugDecoder
 from typing import Optional, List
 from endpoints.Communication import PidDecoder
 
+
+"""
+ 4 3
+ 1 2 
+   8 5
+   7 6
+"""
+
+
 PORT = "/dev/ttyS0"
 RS485_SWITCH = 18
 
@@ -80,7 +89,7 @@ class Communication:
     def read_data_points(self) -> List[DebugDecoder.DataPoint]:
         """ Read dataPoints stored on an Arduino """
         print('decoding...')
-        message = self.read()
+        message = self.read(10)
         if message is None:
             return []
 
@@ -98,11 +107,11 @@ class Communication:
         print('received str', res_str)
         return res_str
 
-    def read(self) -> Optional[Message]:
+    def read(self, timeout=SERIAL_TIMEOUT) -> Optional[Message]:
         """ Read a raw message """
         print('reading')
         self.set_mode(RS485_READ)
-        self.ser.timeout = SERIAL_TIMEOUT
+        self.ser.timeout = timeout
         while True:
             bytes_read = self.ser.read()
             if bytes_read == START_BYTE:

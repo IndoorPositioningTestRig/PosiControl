@@ -14,10 +14,12 @@ export default class extends React.Component {
       target: null,
       setPoint: "0",
       setPointWarning: false,
+      useEncoder: false,
     };
 
     this.handleSetPointChange = this.handleSetPointChange.bind(this);
     this.handleConfirmClick = this.handleConfirmClick.bind(this);
+    this.handleEncoderChange = this.handleEncoderChange.bind(this);
   }
 
   handleValue(field, value) {
@@ -27,20 +29,24 @@ export default class extends React.Component {
   }
 
   async handleConfirmClick() {
-    const {target, setPoint, setPointWarning} = this.state;
+    const {target, setPoint, setPointWarning, useEncoder} = this.state;
     if (target === null || setPointWarning) {
       alert("Target and/or setPoint is invalid!");
       return;
     }
 
+
+    let encoderParam = useEncoder? 1 : 0;
+
+
     const res = await fetch(
-      `${BaseUrl}/setPoint/${target}/${Number.parseInt(setPoint)}/`, {
+      `${BaseUrl}/setPoint/${target}/${Number.parseInt(setPoint)}/${encoderParam}/`, {
         method: "get"
       });
     const jsondata = await res.text();
-    console.log('gotjson', jsondata);
+    console.log("gotjson", jsondata);
     const data = JSON.parse(jsondata);
-    console.log('gotdata', data);
+    console.log("gotdata", data);
     this.setState({data});
   }
 
@@ -59,6 +65,12 @@ export default class extends React.Component {
     return json;
   }
 
+  handleEncoderChange(e) {
+    this.setState({
+      useEncoder: !this.state.useEncoder,
+    });
+  }
+
   render() {
     const {data, target, setPoint, setPointWarning} = this.state;
 
@@ -66,6 +78,16 @@ export default class extends React.Component {
       <div className={"setpoint-screen"}>
         <div className={"left"}>
           <div className={"fields"}>
+            <div className={"field"}>
+              <div className={"name"}>Encoder:</div>
+              <div className={"value"}>
+                <input
+                  type={"checkbox"}
+                  onChange={this.handleEncoderChange}
+                  value={this.state.useEncoder}
+                />
+              </div>
+            </div>
             {/* Target */}
             <div className={"field"}>
               <div className={"name"}>target:</div>

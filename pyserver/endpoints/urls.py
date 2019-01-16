@@ -43,12 +43,16 @@ urlpatterns = [
          views.set_pid,
          name="set_pid"
          ),
-    path('setPoint/<int:target>/<negint:set_point>/',
+    path('setPoint/<int:target>/<negint:set_point>/<int:encoder>/',
          views.set_point_debug,
          name='set_point'
          ),
     path('ping/<int:target>/',
          views.ping,
          name='ping'
+         ),
+    path('home/',
+         views.home,
+         name='home'
          )
 ]

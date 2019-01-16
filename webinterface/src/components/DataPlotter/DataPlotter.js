@@ -20,10 +20,10 @@ function fromDatapoints(datapoints) {
   const outputs = [];
   const encoders = [];
 
-  datapoints.forEach((datapoint, index) => {
-    setpoints.push({x: index * 100 , y:datapoint["setpoint"]/10});
-    outputs.push({x: index * 100, y: datapoint["output"]/10});
-    encoders.push({x: index * 100, y: datapoint["encoder"]/10});
+  datapoints.forEach((datapoint) => {
+    setpoints.push({x: datapoint["time"] , y:datapoint["setpoint"]/10});
+    outputs.push({x: datapoint["time"], y: datapoint["output"]/10});
+    encoders.push({x: datapoint["time"], y: datapoint["encoder"]/10});
   });
 
   return [setpoints, outputs, encoders];

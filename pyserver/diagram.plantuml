@@ -1,0 +1,11 @@
+@startuml
+
+package RestServer {
+  
+}
+
+package Frontend {
+  
+}
+
+@enduml
