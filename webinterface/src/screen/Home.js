@@ -1,6 +1,6 @@
 import React from "react";
 import "./Home.scss";
-import {BaseUrl} from "../constants/Api";
+import {getBaseUrl} from "../constants/Api";
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -23,7 +23,7 @@ export default class Home extends React.Component {
       homing: true,
     });
 
-    const response = await fetch(`${BaseUrl}/home/`, {
+    const response = await fetch(`${getBaseUrl()}/home/`, {
       method: "get",
     });
 

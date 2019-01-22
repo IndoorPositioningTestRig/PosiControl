@@ -2,7 +2,7 @@ import React from "react";
 import Dropdown from "../components/Dropdown/Dropdown";
 import "./Message.scss";
 import {TYPE} from "../constants/Message";
-import {BaseUrl} from "../constants/Api";
+import {getBaseUrl} from "../constants/Api";
 
 export default class Message extends React.Component{
   constructor(props) {
@@ -37,7 +37,7 @@ export default class Message extends React.Component{
       return;
     }
     const messageType = TYPE[message.messageType];
-    fetch(`${BaseUrl}/msg/${message.target}/${messageType}/`, {
+    fetch(`${getBaseUrl()}/msg/${message.target}/${messageType}/`, {
       method: "post",
       body: message.data,
       mode: "no-cors",

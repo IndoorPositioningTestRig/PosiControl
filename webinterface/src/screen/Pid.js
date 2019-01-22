@@ -1,6 +1,6 @@
 import React from "react";
 import "./Pid.scss";
-import {BaseUrl} from "../constants/Api";
+import {getBaseUrl} from "../constants/Api";
 import PropTypes from "prop-types";
 
 const values = ["p", "i", "d"];
@@ -49,7 +49,7 @@ export default class Pid extends React.Component {
       return;
     }
 
-    return fetch(`${BaseUrl}/set_pid/${this.props.target}/${PID["p"]}/${PID["i"]}/${PID["d"]}/`, {
+    return fetch(`${getBaseUrl()}/set_pid/${this.props.target}/${PID["p"]}/${PID["i"]}/${PID["d"]}/`, {
       method: "post",
     });
   }

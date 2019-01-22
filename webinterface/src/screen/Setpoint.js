@@ -2,7 +2,7 @@ import React from "react";
 import "./Setpoint.scss";
 import DataPlotter from "../components/DataPlotter/DataPlotter";
 import Dropdown from "../components/Dropdown/Dropdown";
-import {BaseUrl} from "../constants/Api";
+import {getBaseUrl} from "../constants/Api";
 import Pid from "./Pid";
 
 export default class extends React.Component {
@@ -40,7 +40,7 @@ export default class extends React.Component {
 
 
     const res = await fetch(
-      `${BaseUrl}/setPoint/${target}/${Number.parseInt(setPoint)}/${encoderParam}/`, {
+      `${getBaseUrl()}/setPoint/${target}/${Number.parseInt(setPoint)}/${encoderParam}/`, {
         method: "get"
       });
     const jsondata = await res.text();
@@ -58,7 +58,7 @@ export default class extends React.Component {
   }
 
   async fetchPid() {
-    const res = await fetch(`${BaseUrl}/pid/${this.state.target}`, {
+    const res = await fetch(`${getBaseUrl()}/pid/${this.state.target}`, {
       method: "get",
     });
     const json = await res.json();
