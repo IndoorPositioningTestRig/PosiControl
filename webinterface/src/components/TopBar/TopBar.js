@@ -73,6 +73,12 @@ class Menu extends React.Component {
         >
           Message
         </div>
+        <div
+          className={"option"}
+          onClick={() => this.props.onOptionClick("home")}
+        >
+          Home
+        </div>
       </div>
     );
   }

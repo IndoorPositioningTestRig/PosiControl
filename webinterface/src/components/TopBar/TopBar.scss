@@ -3,7 +3,7 @@
 .top-bar {
   background-color: white;
   height: 2rem;
-  box-shadow: $shadow;
+  z-index: 99999;
   box-sizing: border-box;
 
   .menu-button {
@@ -20,35 +20,43 @@
     .icon {
       height: 100%;
       width: 100%;
-    }
-
-    .menu {
-      cursor: pointer;
-      left: 1rem;
-      box-shadow: $shadow;
       display: flex;
       flex-direction: column;
-      background-color: white;
-      padding: {
-        top: $gutter-top;
-        bottom: $gutter-top;
-      };
-      position: absolute;
+      justify-content: space-between;
 
-      .option {
-        padding: {
-          left: $gutter-side;
-          right: $gutter-side;
-          top: $gutter-top;
-          bottom: $gutter-top;
-        };
-
-        &:hover {
-          background-color: $hover-color;
-        }
+      .line {
+        width: 100%;
+        height: 2px;
+        background-color: black;
       }
     }
   }
 }
 
+.menu {
+  cursor: pointer;
+  left: 1rem;
+  box-shadow: $shadow;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: {
+    top: $gutter-top;
+    bottom: $gutter-top;
+  };
+  position: absolute;
+
+  .option {
+    padding: {
+      left: $gutter-side;
+      right: $gutter-side;
+      top: $gutter-top;
+      bottom: $gutter-top;
+    };
+
+    &:hover {
+      background-color: $hover-color;
+    }
+  }
+}
 
