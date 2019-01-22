@@ -4,5 +4,5 @@
 
 
 export function getBaseUrl() {
-  return `${window.location.hostname}8000:`;
+  return `${window.location.hostname}:8000`;
 }
