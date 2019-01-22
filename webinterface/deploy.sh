@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo Building frontend...
-npm run build
+#npm run build
 echo Done!
 
 echo deploying build...
